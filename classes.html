@@ -1,190 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="index.css" />
-    <script type="text/javascript" src="index.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
-    <title>Caçadores de Luas/Moon Hunters</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classes</title>
+
+  <!-- Framework7 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.css">
+  <link rel="stylesheet" href="css/index.css" />
+
+  <!-- Ícones do Framework7 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons/css/framework7-icons.min.css">
+
 </head>
 
-<body>
-    <style>
-        @font-face {
-            font-family: 'AstronBoyWonder.ttf';
-            src: url(astron-boy-wonder/AstronBoyWonder.ttf);
+<body class="pag-2">
+  <div id="app">
+    <!-- Painel Lateral -->
+    <div class="panel panel-left panel-cover">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="title">Menu</div>
+              <div class="right">
+                <a href="#" class="panel-close">Fechar</a>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <!-- Searchbar -->
+            <div class="searchbar-container">
+              <form class="searchbar">
+                <div class="searchbar-inner">
+                  <div class="searchbar-input-wrap">
+                    <input type="search" placeholder="Buscar...">
+                    <i class="searchbar-icon"></i>
+                    <span class="input-clear-button"></span>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- Lista de Itens -->
+            <div class="list">
+              <ul id="race-list">
+                <li><a href="#" class="link-box3" data-url="/www/armadilheiro.html">Armadilheiro</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/atirador.html">Atirador</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/carteado.html">Carteado</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/clerigo.html">Clérigo</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/combatente.html">Combatente</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/curandeiro.html">Curandeiro</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/demonologista.html">Demonologista</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/domador.html">Domador</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/espiao.html">Espião</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/investigador.html">Investigador</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/mago.html">Mago</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/suporte.html">Suporte</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/tecnologico.html">Tecnológico</a></li>
+              </ul>
+            </div>
+
+            <!-- Caso não encontre nada -->
+            <div class="block searchbar-not-found">
+              <p>Nenhum resultado encontrado.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="view view-main">
+      <div class="page" data-name="home">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="left">
+              <a href="#" onclick="voltarParaIndex()" class="link">
+                <i class="f7-icons">arrow_left</i>
+              </a>
+            </div>
+            <div class="title">Meu App</div>
+            <div class="right">
+              <a href="#" class="link panel-open" data-panel=".panel-left">
+                <i class="f7-icons">menu</i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+          <h1 id="raças">Classes</h1>
+          <h3>
+            Todas as classes foram criadas há muito, muito tempo, mas não foram todas ao mesmo tempo.<br>
+            Algumas foram criadas antes, e isso criou sentimentos de orgulho e de vaidade em relação às outras.<br><br>
+            Com o tempo o que eram apenas sentimentos foram se tornando ações. Ações de violência, que logo se
+            escalonaram para guerras entre as classes, que foram criadas para viver harmoniosamente.<br><br>
+            Algumas classes eram tão vaidosas que se achavam até no direito de criar outras em suas imagens, mas com
+            modificações, o que não deixou os Deuses felizes.
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Framework7 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.js"></script>
+
+  <script>
+    var app = new Framework7({
+      el: '#app',
+      name: 'Meu App',
+      theme: 'auto',
+      panel: {
+        swipe: true,
+      },
+    });
+
+    // Função para voltar à página inicial
+    function voltarParaIndex() {
+      window.location.href = "/www/index.html";
+    }
+
+    // Inicializar a searchbar
+    var searchbar = app.searchbar.create({
+      el: '.searchbar',
+      searchContainer: '.list',
+      searchIn: '.link-box3',
+      on: {
+        search: function (sb, query) {
+          if (query) {
+            let hasVisibleItems = false;
+            // Esconde todos os itens
+            document.querySelectorAll('#race-list li').forEach(function (item) {
+              if (item.textContent.toLowerCase().includes(query.toLowerCase())) {
+                item.style.display = '';
+                hasVisibleItems = true;
+              } else {
+                item.style.display = 'none';
+              }
+            });
+
+            // Mostra/esconde a mensagem de "não encontrado"
+            const notFound = document.querySelector('.searchbar-not-found');
+            notFound.style.display = hasVisibleItems ? 'none' : 'block';
+          } else {
+            // Mostra todos os itens quando a busca está vazia
+            document.querySelectorAll('#race-list li').forEach(function (item) {
+              item.style.display = '';
+            });
+            // Esconde a mensagem de "não encontrado"
+            document.querySelector('.searchbar-not-found').style.display = 'none';
+          }
         }
-
-        @font-face {
-            font-family: 'semi-coder';
-            src: url(semi-coder/Semi-Coder-Regular.otf);
-        }
-
-        @font-face {
-            font-family: 'elektra';
-            src: url(elektra/Elektra.ttf);
-        }
-
-        @font-face {
-            font-family: 'skirmisher';
-            src: url(skirmisher/skirmisher.ttf);
-        }
-
-        @font-face {
-            font-family: 'sketch-gothic-school';
-            src: url(sketch-gothic-school/Sketch\ Gothic\ School.ttf);
-        }
-
-        @font-face {
-            font-family: 'fly-boy';
-            src: url(fly-boy/FlyBoyBB.ttf);
-        }
-
-        @font-face {
-            font-family: 'coralines-cat';
-            src: url(coralines-cat/Coralines-Cat.ttf);
-        }
-
-        @font-face {
-            font-family: 'midnight-in-october';
-            src: url(midnight-in-october/Midnight-in-October.ttf);
-        }
-
-        @font-face {
-            font-family: 'sketch-gothic-school';
-            src: url(sketch-gothic-school/Sketch-Gothic-School.ttf);
-        }
-
-        @font-face {
-            font-family: 'cardinal';
-            src: url(cardinal/Cardinal.ttf);
-        }
-    </style>
-
-    <h1>Classes</h1>
-    <ul>
-        <li> <div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Armadilheiro</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-
-          
-        <li><div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Atirador</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-
-
-        <li><div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Clérigo</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-
-
-        <li><div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Combatente</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-
-
-        <li><div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Curandeiro</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-
-
-        <li><div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Demonologista</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-
-
-        <li><div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Espião</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-
-
-        <li><div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Investigador</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-
-
-        <li><div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Mago</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-
-
-        <li><div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Suporte</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-
-
-        <li><div class="checkbox">
-            <input type="checkbox" class="chkbox" id="item1">
-            <button onclick="alternarVisibilidade('txt1')" class="btnquefazsumir">
-              <u>Tecnológico</u>
-            </button>
-            <div id="txt1" class="classe">
-              
-            </div>
-          </div></li>
-    </ul>
-
+      },
+      removeDiacritics: true
+    });
+  </script>
 </body>
+
+</html>

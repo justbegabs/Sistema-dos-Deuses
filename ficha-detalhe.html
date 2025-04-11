@@ -1,0 +1,3293 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+    <title>Ficha de Personagem</title>
+
+    <!-- Framework7 CSS -->
+    <link rel="stylesheet" href="css/ficha.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        .swal2-popup {
+            font-size: 0.9rem;
+            z-index: 99999 !important;
+        }
+
+        .swal2-container {
+            z-index: 99999 !important;
+        }
+
+        .swal2-backdrop-show {
+            z-index: 99998 !important;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+    </style>
+
+    <!-- Framework7 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/ficha.css">
+
+    <!-- Ícones do Framework7 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons/css/framework7-icons.min.css">
+
+    <!-- Fontes do Sistema -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&display=swap" rel="stylesheet"> -->
+
+    <style>
+        /* Estilos para os diálogos de seleção */
+        .raca-dialog .dialog-inner,
+        .origem-dialog .dialog-inner,
+        .classe-dialog .dialog-inner {
+            padding: 16px;
+        }
+
+        /* Estilo para o cursor nos elementos .dice-roll */
+        .dice-roll {
+            cursor: pointer;
+        }
+
+        /* Estilos para as perícias */
+        .sub-pericias {
+            display: none;
+            padding: 5px 0;
+            margin-left: -10px;
+            background-color: transparent;
+            border-radius: 0 0 5px 5px;
+            border: 1px solid #ff8533;
+            border-top: none;
+            width: 100%;
+            min-width: 500px;
+        }
+
+        .pericia-principal {
+            background-color: #ff8533;
+            color: white;
+            padding: 8px 15px 8px 30px;
+            cursor: pointer;
+            position: relative;
+            margin-bottom: 0;
+            user-select: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .pericia-principal:hover {
+            background-color: rgba(255, 133, 51, 0.1);
+        }
+
+        .pericia-principal.active+.sub-pericias {
+            display: block !important;
+        }
+
+        .sub-pericia-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 10px;
+            margin: 3px 10px;
+            background-color: #fff2e6;
+            border-radius: 3px;
+            border: 1px solid #ff8533;
+            transition: background-color 0.2s;
+            width: calc(100% - 20px);
+            min-width: 480px;
+        }
+
+        .sub-pericia-item:hover {
+            background-color: #ffd9b3;
+        }
+
+        .sub-pericia-nome {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+            white-space: nowrap;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .dice-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+            filter: brightness(1);
+            margin-left: 8px;
+            opacity: 0.7;
+        }
+
+        .dice-icon:hover {
+            transform: scale(1.1);
+            filter: brightness(1.5);
+            opacity: 1;
+        }
+
+        .sub-pericia-valores {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            justify-content: flex-end;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .sub-pericia-valor {
+            width: 45px;
+            padding: 3px;
+            border: 1px solid #ff8533;
+            border-radius: 3px;
+            text-align: center;
+            background-color: #ffffff;
+            color: #000000 !important;
+            font-size: 0.9em;
+            font-weight: bold;
+            -webkit-text-fill-color: #000000;
+        }
+
+        .sub-pericia-valor:focus {
+            outline: none;
+            border-color: #ff9d5c;
+            box-shadow: 0 0 0 2px rgba(255, 133, 51, 0.2);
+            background-color: #ffffff;
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000;
+        }
+
+        .sub-pericia-valor::placeholder {
+            color: #000000;
+            -webkit-text-fill-color: #000000;
+        }
+
+        .sub-pericia-bonus {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            flex: 0 0 auto;
+            min-width: 180px;
+        }
+
+        .bonus-raca,
+        .bonus-classe,
+        .bonus-origem {
+            font-size: 0.85em;
+            color: #000000;
+            padding: 2px 8px;
+            background-color: #fff9f5;
+            border-radius: 3px;
+            border: 1px solid #ff8533;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .raca-list,
+        .origem-list,
+        .classe-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+            padding: 16px;
+            background-color: #2b1a00;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .raca-item,
+        .origem-item,
+        .classe-item {
+            background-color: #ff8533;
+            color: #fff;
+            padding: 12px;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .raca-item:hover,
+        .origem-item:hover,
+        .classe-item:hover {
+            background-color: #ff9d5c;
+        }
+
+        .raca-item:active,
+        .origem-item:active,
+        .classe-item:active {
+            background-color: #e67422;
+        }
+
+        /* Removendo estilos específicos de origem e classe */
+        .origem-list,
+        .classe-list {
+            background-color: #2b1a00 !important;
+        }
+
+        .origem-item,
+        .classe-item {
+            background-color: #ff8533 !important;
+        }
+
+        .origem-item:hover,
+        .classe-item:hover {
+            background-color: #ff9d5c !important;
+        }
+
+        .origem-item:active,
+        .classe-item:active {
+            background-color: #e67422 !important;
+        }
+
+        .raca-item:hover {
+            background-color: #ff9933;
+        }
+
+        .raca-item:active {
+            transform: scale(0.95);
+        }
+
+        .classe-list,
+        .origem-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 8px;
+            max-height: 60vh;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .classe-item,
+        .origem-item {
+            background-color: var(--f7-theme-color);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .classe-item:hover,
+        .origem-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .classe-item:active,
+        .origem-item:active {
+            transform: scale(0.95);
+        }
+
+        .raca-dialog,
+        .origem-dialog,
+        .classe-dialog {
+            max-width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .raca-list,
+        .origem-list,
+        .classe-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            padding: 10px;
+        }
+
+        .raca-item,
+        .origem-item,
+        .classe-item {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .raca-item:hover,
+        .origem-item:hover,
+        .classe-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        #raca,
+        #origem,
+        #classe {
+            cursor: pointer;
+        }
+
+        .atributos-contadores {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+            background-color: #2b1a00;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+
+        .contador-grupo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #ff8533;
+        }
+
+        .contador-label {
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .contador-valor {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .contadores-atributos {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .pericias-lista {
+            padding: 10px;
+            min-width: 500px;
+            overflow-x: auto;
+        }
+
+        .pericia-item {
+            margin-bottom: 5px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .pericia-principal::before {
+            content: '►';
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%) rotate(0deg);
+            transition: transform 0.3s;
+        }
+
+        .pericia-principal.active {
+            border-radius: 5px 5px 0 0;
+            background-color: #e67422;
+        }
+
+        .pericia-principal.active::before {
+            transform: translateY(-50%) rotate(90deg);
+        }
+
+        .sub-pericias {
+            transition: all 0.3s ease;
+            max-height: 0;
+            overflow: hidden;
+        }
+
+        .pericia-principal.active+.sub-pericias {
+            max-height: 1000px;
+            padding: 10px;
+        }
+
+        /* Container de mensagens de rolagem */
+        #mensagens-rolagem {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .mensagem-rolagem {
+            background-color: #fff;
+            border: 1px solid #ff8533;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .mensagem-cabecalho {
+            background-color: #ff8533;
+            color: white;
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 4px 4px 0 0;
+        }
+
+        .mensagem-titulo {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .mensagem-fechar {
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 0 5px;
+        }
+
+        .mensagem-fechar:hover {
+            color: #ffccaa;
+        }
+
+        .mensagem-conteudo {
+            padding: 10px;
+            font-size: 0.9em;
+        }
+
+        .detalhe-rolagem {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            padding: 3px 0;
+            border-bottom: 1px solid #ffe6cc;
+        }
+
+        .detalhe-rolagem:last-child {
+            border-bottom: none;
+        }
+
+        .detalhe-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detalhe-valor {
+            font-weight: bold;
+            color: #ff8533;
+        }
+
+        .total-final {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #ff8533;
+        }
+
+        .total-final .detalhe-label {
+            font-size: 1.1em;
+            color: #333;
+        }
+
+        .total-final .detalhe-valor {
+            font-size: 1.1em;
+            color: #ff6600;
+        }
+
+        [data-attribute="intelecto"]+.sub-pericias {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .barra-inferior {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #333333;
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .barra-inferior .item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .barra-inferior .item i {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            color: #ffffff;
+        }
+
+        .barra-inferior .item.ativo {
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .barra-inferior .item.ativo i {
+            color: #ffd700;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Adicionar o container de mensagens logo após a abertura do body -->
+        <div id="mensagens-rolagem"></div>
+
+        <div class="view view-main">
+            <div class="page">
+                <div class="navbar">
+                    <div class="navbar-bg"></div>
+                    <div class="navbar-inner">
+                        <div class="left">
+                            <a href="#" onclick="window.location.href='ficha.html'" class="link">
+                                <i class="icon icon-back"></i>
+                                <span class="if-not-md">Voltar</span>
+                            </a>
+                        </div>
+                        <div class="title">Ficha de Personagem</div>
+                        <div class="right">
+                            <button class="btn btn-primary">Salvar Ficha</button>
+                            <button onclick="configurarOBS()" class="btn btn-info">Configurar OBS</button>
+                            <button onclick="window.location.href='ficha.html'"
+                                class="btn btn-secondary">Voltar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-content">
+                    <!-- Informações Básicas -->
+                    <div class="info-grid">
+                        <div class="info-item full-width">
+                            <label class="info-label">Nome</label>
+                            <input type="text" class="info-input" id="nome" placeholder="Nome do personagem">
+                        </div>
+                        <div class="info-item">
+                            <label class="info-label">Idade</label>
+                            <input type="number" class="info-input" id="idade" placeholder="Idade">
+                        </div>
+                        <div class="info-item">
+                            <label class="info-label">Data de Nascimento</label>
+                            <input type="text" class="info-input data-nascimento" id="data_nascimento"
+                                placeholder="Ex: 01/01/1990">
+                        </div>
+                        <div class="info-item">
+                            <label class="info-label">Altura</label>
+                            <input type="text" class="info-input" id="altura" placeholder="Ex: 1,75m">
+                        </div>
+                        <div class="info-item">
+                            <label class="info-label">Tipo Sanguíneo</label>
+                            <input type="text" class="info-input" id="tipo_sanguineo" placeholder="Ex: A+">
+                        </div>
+                        <div class="info-item full-width">
+                            <label class="info-label">Sexualidade</label>
+                            <input type="text" class="info-input" id="sexualidade" placeholder="Sexualidade">
+                        </div>
+                    </div>
+
+                    <!-- Nível e Atributos Vitais -->
+                    <div class="grid-box">
+                        <div class="nivel-container">
+                            <span>Nível</span>
+                            <div class="nivel-input-container">
+                                <input type="number" class="info-input" id="nivel" placeholder="0" min="0" max="100">
+                                <span>%</span>
+                            </div>
+                        </div>
+                        <div class="nivel-barra">
+                            <div class="nivel-progresso"></div>
+                        </div>
+                    </div>
+
+                    <!-- Grid de Atributos Vitais -->
+                    <div class="grid-container">
+                        <!-- Coluna Esquerda -->
+                        <div class="grid-box">
+                            <div class="atributos-vitais">
+                                <!-- Vida com Mana -->
+                                <div class="vida-container">
+                                    <div class="mana-circulo">
+                                        <input type="number" class="mana-circulo-input" id="mana_circulo"
+                                            placeholder="0" min="0">
+                                    </div>
+                                    <div>
+                                        <div class="atributo-container">
+                                            <span>Vida</span>
+                                            <div class="atributo-valores">
+                                                <input type="number" class="info-input vida-atual" id="vida_atual"
+                                                    placeholder="0" min="0">
+                                                <span>/</span>
+                                                <input type="number" class="info-input vida-max" id="vida_max"
+                                                    placeholder="0" min="0">
+                                            </div>
+                                        </div>
+                                        <div class="barra-progresso">
+                                            <div class="vida-barra"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Sanidade -->
+                                <div class="sanidade-container">
+                                    <div class="atributo-container">
+                                        <span>Sanidade</span>
+                                        <div class="atributo-valores">
+                                            <input type="number" class="info-input sanidade-atual" id="sanidade_atual"
+                                                placeholder="0" min="0">
+                                            <span>/</span>
+                                            <input type="number" class="info-input sanidade-max" id="sanidade_max"
+                                                placeholder="0" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="barra-progresso">
+                                        <div class="sanidade-barra"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Coluna Direita (Alma) -->
+                        <div class="grid-box">
+                            <div class="alma-container">
+                                <div class="atributo-container">
+                                    <span>Alma</span>
+                                    <div class="atributo-valores">
+                                        <input type="number" class="info-input alma-atual" id="alma_atual"
+                                            placeholder="0" min="0">
+                                        <span>/</span>
+                                        <input type="number" class="info-input alma-max" id="alma_max" placeholder="0"
+                                            min="0">
+                                    </div>
+                                </div>
+                                <div class="barra-progresso">
+                                    <div class="alma-barra"></div>
+                                </div>
+
+                                <!-- Barra de Mana -->
+                                <div class="mana-container">
+                                    <div class="atributo-container">
+                                        <span>Mana</span>
+                                        <div class="atributo-valores">
+                                            <input type="number" class="info-input mana-valor" id="mana_atual"
+                                                placeholder="0" min="0">
+                                            <span>/</span>
+                                            <input type="number" class="info-input mana-max" id="mana_max"
+                                                placeholder="0" min="0">
+                                        </div>
+                                    </div>
+                                    <div class="barra-progresso">
+                                        <div class="mana-barra"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid de Status de Combate e Informações do Personagem -->
+                    <div class="grid-container">
+                        <!-- Status de Combate -->
+                        <div class="grid-box">
+                            <h2>Status de Combate</h2>
+                            <div class="atributos-lista">
+                                <div class="atributo-item">
+                                    <span>Defesa</span>
+                                    <input type="number" id="defesa" placeholder="Valor">
+                                </div>
+                                <div class="atributo-item">
+                                    <span>Esquiva</span>
+                                    <input type="number" id="esquiva" placeholder="Valor">
+                                </div>
+                                <div class="atributo-item">
+                                    <span>Bloqueio</span>
+                                    <input type="number" id="bloqueio" placeholder="Valor">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Informações do Personagem -->
+                        <div class="grid-box">
+                            <h2>Informações do Personagem</h2>
+                            <div class="atributos-lista info-personagem">
+                                <div class="atributo-item">
+                                    <span>Raça</span>
+                                    <input type="text" id="raca" class="campo-info" placeholder="Raça" readonly
+                                        onclick="window.abrirSeletorRacas()">
+                                </div>
+                                <div class="atributo-item">
+                                    <span>Classe</span>
+                                    <input type="text" id="classe" class="campo-info" placeholder="Classe" readonly
+                                        onclick="window.abrirSeletorClasses()">
+                                </div>
+                                <div class="atributo-item">
+                                    <span>Origem</span>
+                                    <input type="text" id="origem" class="campo-info" placeholder="Origem" readonly
+                                        onclick="window.abrirSeletorOrigens()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid de Atributos -->
+                    <div class="grid-container">
+                        <!-- Atributos de Teste -->
+                        <div class="grid-box">
+                            <h2>Atributos de Teste <span class="atributos-contador" id="contador-testes">0/12</span>
+                            </h2>
+                            <div class="atributos-lista">
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="força">Força</span>
+                                    <input type="number" class="atributo-input" data-grupo="teste" placeholder="Valor">
+                                </div>
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="destreza">Destreza</span>
+                                    <input type="number" class="atributo-input" data-grupo="teste" placeholder="Valor">
+                                </div>
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="intelecto">Intelecto</span>
+                                    <input type="number" class="atributo-input" data-grupo="teste" placeholder="Valor">
+                                </div>
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="carisma">Carisma</span>
+                                    <input type="number" class="atributo-input" data-grupo="teste" placeholder="Valor">
+                                </div>
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="magia">Magia</span>
+                                    <input type="number" class="atributo-input" data-grupo="teste" placeholder="Valor">
+                                </div>
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="constituição">Constituição</span>
+                                    <input type="number" class="atributo-input" data-grupo="teste" placeholder="Valor">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Atributos de Sorte -->
+                        <div class="grid-box">
+                            <h2>Atributos de Sorte <span class="atributos-contador" id="contador-sorte">0/12</span></h2>
+                            <div class="atributos-lista">
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="sorte" style="cursor: pointer;">Sorte</span>
+                                    <input type="number" placeholder="Valor" class="atributo-input" data-grupo="sorte">
+                                </div>
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="fama" style="cursor: pointer;">Fama</span>
+                                    <input type="number" placeholder="Valor" class="atributo-input" data-grupo="sorte">
+                                </div>
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="resiliência"
+                                        style="cursor: pointer;">Resiliência</span>
+                                    <input type="number" placeholder="Valor" class="atributo-input" data-grupo="sorte">
+                                </div>
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="fé" style="cursor: pointer;">Fé</span>
+                                    <input type="number" placeholder="Valor" class="atributo-input" data-grupo="sorte">
+                                </div>
+                                <div class="atributo-item">
+                                    <span class="dice-roll" data-attribute="criatividade"
+                                        style="cursor: pointer;">Criatividade</span>
+                                    <input type="number" placeholder="Valor" class="atributo-input" data-grupo="sorte">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Grid de Perícias -->
+                    <div class="grid-container">
+                        <!-- Perícias -->
+                        <div class="grid-box">
+                            <h2>Perícias</h2>
+                            <div class="pericias-lista">
+                                <div class="pericia-item">
+                                    <span class="pericia-principal" data-attribute="força">• Força</span>
+                                    <div class="sub-pericias">
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="acrobacia">
+                                                Acrobacia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="escudos">
+                                                Escudos
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="espadas">
+                                                Espadas
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="luta">
+                                                Luta
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pericia-item">
+                                    <span class="pericia-principal" data-attribute="destreza">• Destreza</span>
+                                    <div class="sub-pericias">
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="armadilhas">
+                                                Armadilhas
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="arcos">
+                                                Arcos
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="armas_fogo_grandes">
+                                                Armas de Fogo (grandes)
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="armas_fogo_pequenas">
+                                                Armas de Fogo (pequenas)
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="dardos">
+                                                Dardos
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="explosivos">
+                                                Explosivos
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="furtividade">
+                                                Furtividade
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="iniciativa">
+                                                Iniciativa
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="pilotagem">
+                                                Pilotagem
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="pontaria">
+                                                Pontaria
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="reflexos">
+                                                Reflexos
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pericia-item">
+                                    <span class="pericia-principal" data-attribute="intelecto">• Intelecto</span>
+                                    <div class="sub-pericias">
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="alquimia">
+                                                Alquimia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="antropologia">
+                                                Antropologia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="artes">
+                                                Artes
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="atualidades">
+                                                Atualidades
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="ciencias">
+                                                Ciências
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="cozinhar">
+                                                Cozinhar
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="crime">
+                                                Crime
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="diplomacia">
+                                                Diplomacia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="enganacao">
+                                                Enganação
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="forense">
+                                                Forense
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="genealogia">
+                                                Genealogia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="herbologia">
+                                                Herbologia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="historia">
+                                                História
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="investigacao">
+                                                Investigação
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="medicina">
+                                                Medicina
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="percepcao">
+                                                Percepção
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="psicologia">
+                                                Psicologia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="raciocinio">
+                                                Raciocínio
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="trapaca">
+                                                Trapaça
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="tecnologia">
+                                                Tecnologia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="vontade">
+                                                Vontade
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pericia-item">
+                                    <span class="pericia-principal" data-attribute="carisma">• Carisma</span>
+                                    <div class="sub-pericias">
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="empatia">
+                                                Empatia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="intimidacao">
+                                                Intimidação
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="labia">
+                                                Lábia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="seducao">
+                                                Sedução
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pericia-item">
+                                    <span class="pericia-principal" data-attribute="magia">• Magia</span>
+                                    <div class="sub-pericias">
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="astrologia">
+                                                Astrologia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="conhecimento_arcano">
+                                                Conhecimento Arcano
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="conjuracao">
+                                                Conjuração
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="demonologia">
+                                                Demonologia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="encantamento">
+                                                Encantamento
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="exorcismo">
+                                                Exorcismo
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="ilusao">
+                                                Ilusão
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="necromancia">
+                                                Necromancia
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="religiao">
+                                                Religião
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="runas">
+                                                Runas
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pericia-item">
+                                    <span class="pericia-principal" data-attribute="constituicao">• Constituição</span>
+                                    <div class="sub-pericias">
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="atletismo">
+                                                Atletismo
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="fortitude">
+                                                Fortitude
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="sub-pericia-item">
+                                            <span class="sub-pericia-nome" data-attribute="sobrevivencia">
+                                                Sobrevivência
+                                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MDAgNTAwIj48cGF0aCBmaWxsPSIjY2M1NTAwIiBkPSJNMjUwIDEwTDUwIDIwMGwxMDAgMjAwaDIwMGwxMDAtMjAwTDI1MCAxMHptLTUwIDEwMGw1MCA1MCA1MC01MCA1MCA1MHY1MGwtNTAgNTAtNTAtNTAtNTAgNTB2LTUwbDUwLTUwem0tNTAgMTUwbDUwIDUwdjUwbC01MC01MHYtNTB6bTIwMCAwbDUwIDUwdjUwbC01MC01MHYtNTB6Ii8+PC9zdmc+"
+                                                    class="dice-icon" onclick="rolarD10ParaPericia(this)"
+                                                    title="Rolar 1d10">
+                                            </span>
+                                            <div class="sub-pericia-valores">
+                                                <input type="number" class="sub-pericia-valor" placeholder="0" min="0">
+                                                <div class="sub-pericia-bonus">
+                                                    <span class="bonus-raca" title="Bônus de Raça">+0</span>
+                                                    <span class="bonus-classe" title="Bônus de Classe">+0</span>
+                                                    <span class="bonus-origem" title="Bônus de Origem">+0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contadores-atributos">
+                        <div>Total de Atributos: <span id="total-atributos">0/12</span></div>
+                        <div>Atributos de Teste: <span id="total-testes">0/12</span></div>
+                        <div>Atributos de Sorte: <span id="total-sorte">0/12</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Framework7 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.js"></script>
+    <script src="js/ficha.js"></script>
+    <script>
+        // Inicializar Framework7
+        var app = new Framework7({
+            root: '#app',
+            name: 'Ficha de Personagem',
+            id: 'com.ficha.app',
+            theme: 'auto',
+            panel: {
+                swipe: true,
+            },
+            dialog: {
+                buttonOk: 'OK',
+                buttonCancel: 'Cancelar'
+            }
+        });
+
+        function gerarNovoId() {
+            const personagens = JSON.parse(localStorage.getItem('personagens') || '[]');
+            if (!Array.isArray(personagens)) {
+                return 0;
+            }
+
+            // Encontra o primeiro índice vazio ou retorna o próximo índice
+            const novoId = personagens.findIndex(p => p === null);
+            return novoId >= 0 ? novoId : personagens.length;
+        }
+
+        function aplicarValoresIniciais() {
+            document.querySelector('#nome').value = 'Nova Ficha';
+            document.querySelector('#nivel').value = '0';
+            document.querySelector('#vida_atual').value = '20';
+            document.querySelector('#vida_max').value = '20';
+            document.querySelector('#alma_atual').value = '15';
+            document.querySelector('#alma_max').value = '15';
+        }
+
+        function inicializarPagina() {
+            // Carrega a ficha se houver um ID na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const fichaId = urlParams.get('id');
+
+            if (fichaId) {
+                carregarFicha();
+            } else {
+                // Se não houver ID, aplica valores iniciais
+                aplicarValoresIniciais();
+            }
+
+            // Adiciona listeners para os campos que precisam recalcular valores
+            document.querySelector('#nivel').addEventListener('change', () => {
+                calcularVidaTotal();
+                calcularSanidadeTotal();
+                calcularManaTotal();
+                calcularAlmaTotal();
+                atualizarBarraNivel();
+            });
+
+            // Listeners para atributos
+            document.querySelectorAll('[data-attribute]').forEach(elem => {
+                elem.nextElementSibling?.addEventListener('change', () => {
+                    calcularVidaTotal();
+                    calcularSanidadeTotal();
+                    calcularManaTotal();
+                    calcularAlmaTotal();
+                    calcularDefesaTotal();
+                    atualizarContadorAtributos();
+                });
+            });
+
+            // Listeners para campos vitais
+            ['vida', 'sanidade', 'mana', 'alma'].forEach(tipo => {
+                document.querySelector(`#${tipo}_atual`)?.addEventListener('change', () => {
+                    window[`atualizarBarra${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`]();
+                    atualizarListaFichas();
+                });
+            });
+
+            // Inicializa contadores e cálculos
+            atualizarContadorAtributos();
+            calcularVidaTotal();
+            calcularSanidadeTotal();
+            calcularManaTotal();
+            calcularAlmaTotal();
+            calcularDefesaTotal();
+        }
+
+        function salvarFicha(idParam) {
+            try {
+                const fichaId = idParam || (new URLSearchParams(window.location.search)).get('id');
+
+                if (!fichaId) {
+                    console.error('ID da ficha não encontrado');
+                    return;
+                }
+
+                // Coleta todos os dados da ficha
+                const fichaData = {
+                    id: fichaId,
+                    nome: document.querySelector('#nome').value || 'Nova Ficha',
+                    idade: document.querySelector('#idade').value,
+                    dataNascimento: document.querySelector('#data_nascimento').value,
+                    altura: document.querySelector('#altura').value,
+                    tipoSanguineo: document.querySelector('#tipo_sanguineo').value,
+                    sexualidade: document.querySelector('#sexualidade').value,
+                    nivel: document.querySelector('#nivel').value,
+                    raca: document.querySelector('#raca').value,
+                    classe: document.querySelector('#classe').value,
+                    origem: document.querySelector('#origem').value,
+                    vida: {
+                        atual: document.querySelector('#vida_atual').value,
+                        max: document.querySelector('#vida_max').value
+                    },
+                    sanidade: {
+                        atual: document.querySelector('#sanidade_atual').value,
+                        max: document.querySelector('#sanidade_max').value
+                    },
+                    mana: {
+                        atual: document.querySelector('#mana_atual').value,
+                        max: document.querySelector('#mana_max').value
+                    },
+                    alma: {
+                        atual: document.querySelector('#alma_atual').value,
+                        max: document.querySelector('#alma_max').value
+                    },
+                    defesa: document.querySelector('#defesa').value,
+                    esquiva: document.querySelector('#esquiva').value,
+                    bloqueio: document.querySelector('#bloqueio').value,
+                    atributos: {
+                        teste: Array.from(document.querySelectorAll('.atributo-item[data-grupo="teste"]')).map(item => ({
+                            nome: item.querySelector('.dice-roll').textContent.trim(),
+                            valor: item.querySelector('.atributo-input').value
+                        })),
+                        sorte: Array.from(document.querySelectorAll('.atributo-item[data-grupo="sorte"]')).map(item => ({
+                            nome: item.querySelector('.dice-roll').textContent.trim(),
+                            valor: item.querySelector('.atributo-input').value
+                        }))
+                    },
+                    pericias: Array.from(document.querySelectorAll('.sub-pericia-item')).map(item => ({
+                        nome: item.querySelector('[data-attribute]').getAttribute('data-attribute'),
+                        valor: item.querySelector('.sub-pericia-valor').value,
+                        bonusRaca: item.querySelector('.bonus-raca').textContent,
+                        bonusClasse: item.querySelector('.bonus-classe').textContent,
+                        bonusOrigem: item.querySelector('.bonus-origem').textContent
+                    }))
+                };
+
+                // Recupera o array de personagens
+                let personagens = JSON.parse(localStorage.getItem('personagens') || '[]');
+                if (!Array.isArray(personagens)) {
+                    personagens = [];
+                }
+
+                // Converte o ID para número
+                const numericId = parseInt(fichaId);
+
+                // Garante que o array tenha o tamanho necessário
+                while (personagens.length <= numericId) {
+                    personagens.push(null);
+                }
+
+                // Atualiza a ficha no array
+                personagens[numericId] = fichaData;
+
+                // Salva o array atualizado
+                localStorage.setItem('personagens', JSON.stringify(personagens));
+
+                console.log('Ficha salva com sucesso:', fichaData);
+                console.log('Array de personagens atualizado:', personagens);
+                alert('Ficha salva com sucesso!');
+
+            } catch (error) {
+                console.error('Erro ao salvar ficha:', error);
+                alert('Erro ao salvar ficha: ' + error.message);
+            }
+        }
+
+        function carregarFicha() {
+            const fichaId = obterIdDaUrl();
+            if (!fichaId) {
+                console.error('ID da ficha não encontrado');
+                return;
+            }
+
+            try {
+                // Recupera o array de personagens
+                const personagens = JSON.parse(localStorage.getItem('personagens') || '[]');
+                if (!Array.isArray(personagens)) {
+                    throw new Error('Array de personagens inválido');
+                }
+
+                // Converte o ID para número e recupera a ficha
+                const numericId = parseInt(fichaId);
+                const fichaData = personagens[numericId];
+
+                if (!fichaData) {
+                    throw new Error('Ficha não encontrada');
+                }
+
+                // Preenche os dados básicos
+                document.querySelector('#nome').value = fichaData.nome || 'Nova Ficha';
+                document.querySelector('#idade').value = fichaData.idade || '';
+                document.querySelector('#data_nascimento').value = fichaData.dataNascimento || '';
+                document.querySelector('#altura').value = fichaData.altura || '';
+                document.querySelector('#tipo_sanguineo').value = fichaData.tipoSanguineo || '';
+                document.querySelector('#sexualidade').value = fichaData.sexualidade || '';
+                document.querySelector('#nivel').value = fichaData.nivel || '0';
+                document.querySelector('#raca').value = fichaData.raca || '';
+                document.querySelector('#classe').value = fichaData.classe || '';
+                document.querySelector('#origem').value = fichaData.origem || '';
+
+                // Preenche os dados vitais
+                document.querySelector('#vida_atual').value = fichaData.vida?.atual || '20';
+                document.querySelector('#vida_max').value = fichaData.vida?.max || '20';
+                document.querySelector('#sanidade_atual').value = fichaData.sanidade?.atual || '10';
+                document.querySelector('#sanidade_max').value = fichaData.sanidade?.max || '10';
+                document.querySelector('#mana_atual').value = fichaData.mana?.atual || '15';
+                document.querySelector('#mana_max').value = fichaData.mana?.max || '15';
+                document.querySelector('#alma_atual').value = fichaData.alma?.atual || '15';
+                document.querySelector('#alma_max').value = fichaData.alma?.max || '15';
+
+                // Preenche os dados de combate
+                document.querySelector('#defesa').value = fichaData.defesa || '10';
+                document.querySelector('#esquiva').value = fichaData.esquiva || '10';
+                document.querySelector('#bloqueio').value = fichaData.bloqueio || '0';
+
+                // Preenche os atributos
+                if (fichaData.atributos) {
+                    // Atributos de teste
+                    fichaData.atributos.teste?.forEach(atributo => {
+                        const items = document.querySelectorAll('.atributo-item[data-grupo="teste"]');
+                        items.forEach(item => {
+                            const nomeAtributo = item.querySelector('.dice-roll').textContent.trim();
+                            if (nomeAtributo === atributo.nome) {
+                                item.querySelector('.atributo-input').value = atributo.valor;
+                            }
+                        });
+                    });
+
+                    // Atributos de sorte
+                    fichaData.atributos.sorte?.forEach(atributo => {
+                        const items = document.querySelectorAll('.atributo-item[data-grupo="sorte"]');
+                        items.forEach(item => {
+                            const nomeAtributo = item.querySelector('.dice-roll').textContent.trim();
+                            if (nomeAtributo === atributo.nome) {
+                                item.querySelector('.atributo-input').value = atributo.valor;
+                            }
+                        });
+                    });
+                }
+
+                // Preenche as perícias
+                if (fichaData.pericias) {
+                    fichaData.pericias.forEach(pericia => {
+                        const item = document.querySelector(`.sub-pericia-item [data-attribute="${pericia.nome}"]`)?.closest('.sub-pericia-item');
+                        if (item) {
+                            item.querySelector('.sub-pericia-valor').value = pericia.valor || '0';
+                            item.querySelector('.bonus-raca').textContent = pericia.bonusRaca || '+0';
+                            item.querySelector('.bonus-classe').textContent = pericia.bonusClasse || '+0';
+                            item.querySelector('.bonus-origem').textContent = pericia.bonusOrigem || '+0';
+                        }
+                    });
+                }
+
+                // Atualiza todas as barras de progresso
+                atualizarBarraVida();
+                atualizarBarraSanidade();
+                atualizarBarraMana();
+                atualizarBarraAlma();
+                atualizarBarraNivel();
+
+                // Atualiza os contadores e cálculos
+                atualizarContadorAtributos();
+                calcularDefesaTotal();
+
+                console.log('Ficha carregada com sucesso:', fichaData);
+            } catch (error) {
+                console.error('Erro ao carregar ficha:', error);
+                alert('Erro ao carregar ficha: ' + error.message);
+            }
+        }
+
+        // Inicializa a página quando o DOM estiver carregado
+        document.addEventListener('DOMContentLoaded', function () {
+            // Adiciona evento de clique ao botão de salvar
+            const btnSalvar = document.querySelector('.btn-primary');
+            if (btnSalvar) {
+                btnSalvar.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    console.log('Botão de salvar clicado');
+                    salvarFicha();
+                });
+            }
+
+            // Inicializa a página
+            inicializarPagina();
+        });
+
+        // Funções de cálculo de status
+        /**
+         * Calcula o total de vida do personagem baseado em seus atributos e classe
+         * Fórmula base: (Resiliência × 3) + 20 (mínimo 20)
+         * Bônus por nível: A cada 5 níveis, recebe bônus baseado na classe
+         */
+        function calcularVidaTotal() {
+            const resiliencia = parseInt(document.querySelector('[data-attribute="resiliência"]')?.nextElementSibling?.value) || 0;
+            const classe = document.querySelector('#classe')?.value;
+            const nivel = parseInt(document.querySelector('#nivel')?.value) || 0;
+
+            // Vida base: Resiliência × 3 + 20 (mínimo 20)
+            let vidaTotal = Math.max((resiliencia * 3) + 20, 20);
+
+            // Calcular quantos bônus de 5% foram atingidos
+            const bonusNivel = Math.floor(nivel / 5);
+
+            // Adicionar bônus por nível baseado na classe
+            switch (classe) {
+                case 'Tecnológico':
+                case 'Atirador':
+                case 'Armadilheiro':
+                    vidaTotal += (resiliencia * 3) * bonusNivel; // Classes com foco em resistência
+                    break;
+                case 'Mago':
+                case 'Curandeiro':
+                case 'Suporte':
+                case 'Clérigo':
+                case 'Demonologista':
+                case 'Domador':
+                case 'Espião':
+                case 'Carteado':
+                case 'Investigador':
+                    vidaTotal += (resiliencia * 2) * bonusNivel; // Classes balanceadas
+                    break;
+                case 'Combatente':
+                    vidaTotal += (resiliencia * 4) * bonusNivel; // Classe com maior bônus de vida
+                    break;
+                default:
+                    vidaTotal += resiliencia * bonusNivel;
+            }
+
+            // Bônus adicional para classes específicas
+            if (['Atirador', 'Combatente', 'Curandeiro'].includes(classe)) {
+                vidaTotal += 7;
+            }
+
+            document.querySelector('#vida_max').value = vidaTotal;
+
+            // Atualiza vida atual mantendo o limite máximo
+            const vidaAtual = parseInt(document.querySelector('#vida_atual').value) || 20;
+            document.querySelector('#vida_atual').value = Math.min(vidaAtual, vidaTotal);
+
+            atualizarBarraVida();
+            atualizarListaFichas();
+            console.log('Vida total calculada:', vidaTotal);
+        }
+
+        function atualizarBarraVida() {
+            const vidaAtual = parseInt(document.querySelector('#vida_atual')?.value) || 0;
+            const vidaMax = parseInt(document.querySelector('#vida_max')?.value) || 1;
+            const porcentagem = Math.min(100, Math.max(0, (vidaAtual / vidaMax) * 100));
+            const barra = document.querySelector('.vida-barra');
+            if (barra) barra.style.width = `${porcentagem}%`;
+        }
+
+
+        /**
+         * Calcula o total de sanidade do personagem baseado em seus atributos e classe
+         * Fórmula base: (Intelecto × 5) + (Carisma × 3) + 10 (mínimo 10)
+         * Bônus por nível: A cada 5 níveis, recebe bônus baseado na classe
+         */
+        function calcularSanidadeTotal() {
+            const intelecto = parseInt(document.querySelector('[data-attribute="intelecto"]')?.nextElementSibling?.value) || 0;
+            const carisma = parseInt(document.querySelector('[data-attribute="carisma"]')?.nextElementSibling?.value) || 0;
+            const magia = parseInt(document.querySelector('[data-attribute="magia"]')?.nextElementSibling?.value) || 0;
+            const classe = document.querySelector('#classe')?.value;
+            const nivel = parseInt(document.querySelector('#nivel')?.value) || 0;
+
+            // Sanidade base: (Intelecto × 5) + (Carisma × 3) + 10 (mínimo 10)
+            let sanidadeTotal = Math.max((intelecto * 5) + (carisma * 3) + 10, 10);
+
+            // Calcular quantos bônus de 5% foram atingidos
+            const bonusNivel = Math.floor(nivel / 5);
+
+            // Adicionar bônus por nível baseado na classe
+            switch (classe) {
+                case 'Tecnológico':
+                    sanidadeTotal += (carisma * 3) * bonusNivel;
+                    break;
+                case 'Mago':
+                case 'Curandeiro':
+                    sanidadeTotal += (magia * 2) * bonusNivel;
+                    break;
+                case 'Atirador':
+                case 'Armadilheiro':
+                case 'Combatente':
+                case 'Demonologista':
+                case 'Domador':
+                case 'Carteado':
+                    sanidadeTotal += (carisma * 2) * bonusNivel;
+                    break;
+                case 'Investigador':
+                case 'Suporte':
+                case 'Clérigo':
+                case 'Espião':
+                    sanidadeTotal += (carisma * 3) * bonusNivel;
+                    break;
+                default:
+                    sanidadeTotal += carisma * bonusNivel;
+            }
+
+            // Adicionar bônus de classe se aplicável
+            if (['Demonologista', 'Clérigo', 'Suporte'].includes(classe)) {
+                sanidadeTotal += 7;
+            }
+
+            document.querySelector('#sanidade_max').value = sanidadeTotal;
+
+            // Atualizar sanidade atual se necessário
+            const sanidadeAtual = parseInt(document.querySelector('#sanidade_atual').value) || 10;
+            document.querySelector('#sanidade_atual').value = Math.min(sanidadeAtual, sanidadeTotal);
+
+            atualizarBarraSanidade();
+            atualizarListaFichas();
+            console.log('Sanidade total calculada:', sanidadeTotal);
+        }
+
+        /**
+         * Calcula o total de mana do personagem baseado em seus atributos e classe
+         * Fórmula base: (Magia × 5) + 15 (mínimo 15)
+         * Bônus por nível: A cada 5 níveis, recebe bônus baseado na classe
+         */
+        function calcularManaTotal() {
+            const magia = parseInt(document.querySelector('[data-attribute="magia"]').nextElementSibling.value) || 0;
+            const classe = document.querySelector('#classe').value;
+            const nivel = parseInt(document.querySelector('#nivel').value) || 0;
+
+            // Mana base: (Magia × 5) + 15 (mínimo 15)
+            let manaTotal = Math.max((magia * 5) + 15, 15);
+
+            // Calcular quantos bônus de 5% foram atingidos
+            const bonusNivel = Math.floor(nivel / 5);
+
+            // Adicionar bônus por nível baseado na classe
+            switch (classe) {
+                case 'Tecnológico':
+                case 'Atirador':
+                case 'Armadilheiro':
+                case 'Combatente':
+                case 'Investigador':
+                case 'Suporte':
+                case 'Clérigo':
+                case 'Espião':
+                    manaTotal += (magia * 2) * bonusNivel;
+                    break;
+                case 'Mago':
+                case 'Curandeiro':
+                case 'Demonologista':
+                case 'Domador':
+                case 'Carteado':
+                    manaTotal += (magia * 3) * bonusNivel;
+                    break;
+                default:
+                    manaTotal += magia * bonusNivel;
+            }
+
+            // Adicionar bônus de classe se aplicável
+            if (['Mago', 'Domador', 'Carteado'].includes(classe)) {
+                manaTotal += 7;
+            }
+
+            document.querySelector('#mana_max').value = manaTotal;
+
+            // Atualizar mana atual se necessário
+            const manaAtual = parseInt(document.querySelector('#mana_atual').value) || manaTotal;
+            document.querySelector('#mana_atual').value = Math.min(manaAtual, manaTotal);
+
+            atualizarBarraMana();
+        }
+
+
+        /**
+         * Calcula o total de alma do personagem
+         * Fórmula: (Magia × 5) + (Resiliência × 3) + (Intelecto × 2) + 15 (mínimo 15)
+         * Só é calculado no nível 0 e apenas uma vez
+         */
+        function calcularAlmaTotal() {
+            const nivel = parseInt(document.querySelector('#nivel')?.value) || 0;
+
+            // Só calcula se for nível 0 e ainda não tiver sido calculado
+            if (nivel === 0 && !almaCalculada) {
+                const getAtributoValor = (atributo) => {
+                    const span = document.querySelector(`[data-attribute="${atributo}"]`);
+                    const input = span?.closest('.atributo-item')?.querySelector('input');
+                    return parseInt(input?.value) || 0;
+                };
+
+                const magia = getAtributoValor('magia');
+                const resiliencia = getAtributoValor('resiliência');
+                const intelecto = getAtributoValor('intelecto');
+
+                const almaTotal = Math.max((magia * 5) + (resiliencia * 3) + (intelecto * 2) + 15, 15);
+
+                // Preenche os campos de alma
+                const almaMaxInput = document.querySelector('#alma_max');
+                const almaAtualInput = document.querySelector('#alma_atual');
+
+                if (almaMaxInput) almaMaxInput.value = almaTotal;
+
+                const almaAtual = parseInt(almaAtualInput?.value) || almaTotal;
+                if (almaAtualInput) almaAtualInput.value = Math.min(almaAtual, almaTotal);
+
+                atualizarBarraAlma();
+
+                almaCalculada = true; // não calcula novamente
+            }
+        }
+
+
+
+
+        // Funções para atualizar as barras de progresso
+        function atualizarBarraVida() {
+            const vidaAtual = parseInt(document.querySelector('#vida_atual').value) || 0;
+            const vidaMax = parseInt(document.querySelector('#vida_max').value) || 1;
+            const porcentagem = (vidaAtual / vidaMax) * 100;
+            document.querySelector('.vida-barra').style.width = porcentagem + '%';
+        }
+
+        function atualizarBarraMana() {
+            const manaAtual = parseInt(document.querySelector('#mana_atual').value) || 0;
+            const manaMax = parseInt(document.querySelector('#mana_max').value) || 1;
+            const porcentagem = (manaAtual / manaMax) * 100;
+            document.querySelector('.mana-barra').style.width = porcentagem + '%';
+        }
+
+        function atualizarBarraAlma() {
+            const almaAtual = parseInt(document.querySelector('#alma_atual')?.value) || 0;
+            const almaMax = parseInt(document.querySelector('#alma_max')?.value) || 1;
+
+            const porcentagem = Math.min(100, Math.max(0, (almaAtual / almaMax) * 100));
+            const barra = document.querySelector('.alma-barra');
+            if (barra) barra.style.width = `${porcentagem}%`;
+        }
+
+
+
+        function atualizarBarraNivel() {
+            const nivel = parseInt(document.querySelector('#nivel').value) || 0;
+            const nivelBarra = document.querySelector('.nivel-progresso');
+            if (nivelBarra) {
+                const porcentagem = Math.min(nivel, 100);
+                nivelBarra.style.width = porcentagem + '%';
+                console.log('Barra de nível atualizada:', porcentagem + '%');
+            } else {
+                console.warn('Elemento da barra de nível não encontrado');
+            }
+        }
+
+        // Funções de cálculo de status de combate
+        function calcularDefesaTotal() {
+            const constituicao = parseInt(document.querySelector('[data-attribute="constituição"]').nextElementSibling.value) || 0;
+            const classe = document.querySelector('#classe').value;
+
+            // Defesa base: Constituição + 10
+            let defesaTotal = constituicao + 10;
+
+            // Adicionar bônus de classe se aplicável
+            if (['Espião', 'Armadilheiro'].includes(classe)) {
+                defesaTotal += 7;
+            }
+
+            document.querySelector('#defesa').value = defesaTotal;
+            calcularEsquivaTotal();
+        }
+
+        function calcularEsquivaTotal() {
+            const defesa = parseInt(document.querySelector('#defesa').value) || 0;
+
+            // Encontra o span com data-attribute="reflexos"
+            const spanReflexos = document.querySelector('[data-attribute="reflexos"]');
+            if (!spanReflexos) {
+                console.warn('Campo Reflexos não encontrado!');
+                return;
+            }
+
+            // Sobe para o .sub-pericia-item
+            const item = spanReflexos.closest('.sub-pericia-item');
+            const valorBase = parseInt(item.querySelector('.sub-pericia-valor').value) || 0;
+
+            // Coleta e converte os bônus (removendo o "+")
+            const bonusRaca = parseInt(item.querySelector('.bonus-raca').textContent.replace('+', '')) || 0;
+            const bonusClasse = parseInt(item.querySelector('.bonus-classe').textContent.replace('+', '')) || 0;
+            const bonusOrigem = parseInt(item.querySelector('.bonus-origem').textContent.replace('+', '')) || 0;
+
+            const reflexos = valorBase + bonusRaca + bonusClasse + bonusOrigem;
+
+            const esquivaTotal = defesa + reflexos;
+            document.querySelector('#esquiva').value = esquivaTotal;
+        }
+
+        function calcularBloqueioTotal() {
+            console.log('Iniciando cálculo de bloqueio...');
+
+            // Obtém o valor de Constituição
+            const constituicaoElement = document.querySelector('[data-attribute="constituição"]');
+            if (!constituicaoElement) {
+                console.warn('Elemento Constituição não encontrado');
+                return;
+            }
+            const constituicao = parseInt(constituicaoElement.nextElementSibling.value) || 0;
+            console.log('Valor de Constituição:', constituicao);
+
+            // Encontra o elemento Fortitude
+            const spanFortitude = document.querySelector('[data-attribute="fortitude"]');
+            if (!spanFortitude) {
+                console.warn('Elemento Fortitude não encontrado');
+                return;
+            }
+
+            // Obtém o valor base e os bônus de Fortitude
+            const item = spanFortitude.closest('.sub-pericia-item');
+            const valorBase = parseInt(item.querySelector('.sub-pericia-valor').value) || 0;
+            const bonusRaca = parseInt(item.querySelector('.bonus-raca').textContent.replace('+', '')) || 0;
+            const bonusClasse = parseInt(item.querySelector('.bonus-classe').textContent.replace('+', '')) || 0;
+            const bonusOrigem = parseInt(item.querySelector('.bonus-origem').textContent.replace('+', '')) || 0;
+
+            const fortitude = valorBase + bonusRaca + bonusClasse + bonusOrigem;
+            console.log('Valor de Fortitude:', fortitude, '(base:', valorBase, '+ bônus:', bonusRaca + bonusClasse + bonusOrigem, ')');
+
+            // Calcula o bloqueio total: (constituição × 2) + (fortitude ÷ 2) arredondando para baixo
+            const bloqueioTotal = (constituicao * 2) + Math.floor(fortitude / 2);
+            console.log('Bloqueio total calculado:', bloqueioTotal);
+
+            // Atualiza o valor do bloqueio
+            const bloqueioElement = document.querySelector('#bloqueio');
+            if (bloqueioElement) {
+                bloqueioElement.value = bloqueioTotal;
+                console.log('Valor do bloqueio atualizado para:', bloqueioTotal);
+            } else {
+                console.warn('Elemento de bloqueio não encontrado');
+            }
+        }
+
+        // Função para atualizar os contadores de atributos
+        function atualizarContadorAtributos() {
+            // Atualizar contador de teste
+            const inputsTeste = document.querySelectorAll('.atributo-input[data-grupo="teste"]');
+            let totalTeste = 0;
+            inputsTeste.forEach(input => {
+                totalTeste += parseFloat(input.value) || 0;
+            });
+            document.querySelector('#contador-testes').textContent = `${totalTeste}/6`;
+
+            // Atualizar contador de sorte
+            const inputsSorte = document.querySelectorAll('.atributo-input[data-grupo="sorte"]');
+            let totalSorte = 0;
+            inputsSorte.forEach(input => {
+                totalSorte += parseFloat(input.value) || 0;
+            });
+            document.querySelector('#contador-sorte').textContent = `${totalSorte}/6`;
+        }
+
+        // Event listeners para atualização automática
+        document.addEventListener('DOMContentLoaded', function () {
+            // Primeiro tenta carregar uma ficha existente
+            carregarFicha();
+
+            // Se não houver ficha, aplica valores iniciais
+            const urlParams = new URLSearchParams(window.location.search);
+            if (!urlParams.get('id')) {
+                aplicarValoresIniciais();
+            }
+
+            // Event listeners para valores atuais
+            document.querySelector('#vida_atual').addEventListener('input', atualizarBarraVida);
+            document.querySelector('#mana_atual').addEventListener('input', atualizarBarraMana);
+            document.querySelector('#sanidade_atual').addEventListener('input', atualizarBarraSanidade);
+            document.querySelector('#alma_atual').addEventListener('input', atualizarBarraAlma);
+
+            // Event listeners para valores máximos
+            document.querySelector('#vida_max').addEventListener('input', atualizarBarraVida);
+            document.querySelector('#mana_max').addEventListener('input', atualizarBarraMana);
+            document.querySelector('#sanidade_max').addEventListener('input', atualizarBarraSanidade);
+            document.querySelector('#alma_max').addEventListener('input', atualizarBarraAlma);
+
+            // Event listener para nível
+            document.querySelector('#nivel').addEventListener('input', function () {
+                const nivel = parseInt(this.value) || 0;
+                // Atualizar a barra de nível
+                atualizarBarraNivel();
+                // Recalcular todos os valores que dependem do nível
+                calcularVidaTotal();
+                calcularManaTotal();
+                calcularSanidadeTotal();
+                // Atualizar os contadores de atributos com o novo limite baseado no nível
+                atualizarContadoresAtributos();
+            });
+
+            // Event listeners para atributos
+            const inputsAtributos = document.querySelectorAll('.atributo-input');
+            inputsAtributos.forEach(input => {
+                input.addEventListener('input', function () {
+                    atualizarContadoresAtributos();
+
+                    // Recalcular valores que dependem dos atributos
+                    if (this.dataset.grupo === 'teste') {
+                        if (this.dataset.attribute === 'resiliência') {
+                            calcularVidaTotal();
+                            calcularAlmaTotal();
+                        } else if (this.dataset.attribute === 'magia') {
+                            calcularManaTotal();
+                            calcularAlmaTotal();
+                        } else if (this.dataset.attribute === 'intelecto') {
+                            calcularSanidadeTotal();
+                            calcularAlmaTotal();
+                        } else if (this.dataset.attribute === 'carisma') {
+                            calcularSanidadeTotal();
+                        } else if (this.dataset.attribute === 'constituição') {
+                            calcularDefesaTotal();
+                            calcularBloqueioTotal();
+                        }
+                    }
+                });
+            });
+
+            // Atributos que afetam vida
+            document.querySelector('[data-attribute="resiliência"]').nextElementSibling.addEventListener('change', function () {
+                calcularVidaTotal();
+                calcularAlmaTotal();
+            });
+
+            // Atributos que afetam mana
+            document.querySelector('[data-attribute="magia"]').nextElementSibling.addEventListener('change', function () {
+                calcularManaTotal();
+                calcularAlmaTotal();
+            });
+
+            // Atributos que afetam sanidade
+            document.querySelector('[data-attribute="intelecto"]').nextElementSibling.addEventListener('change', function () {
+                calcularSanidadeTotal();
+                calcularAlmaTotal();
+            });
+
+            document.querySelector('[data-attribute="carisma"]').nextElementSibling.addEventListener('change', function () {
+                calcularSanidadeTotal();
+            });
+
+            // Atributos que afetam defesa e bloqueio
+            document.querySelector('[data-attribute="constituição"]').nextElementSibling.addEventListener('change', function () {
+                calcularDefesaTotal();
+                calcularBloqueioTotal();
+            });
+
+            // Perícia que afeta esquiva
+            const reflexosInput = document.querySelector('[data-attribute="reflexos"]').closest('.sub-pericia-item').querySelector('.sub-pericia-valor');
+            if (reflexosInput) {
+                console.log('Input de reflexos encontrado:', reflexosInput);
+                reflexosInput.addEventListener('input', calcularEsquivaTotal);
+            } else {
+                console.warn('Input de reflexos não encontrado!');
+            }
+
+            // Perícia que afeta bloqueio
+            const fortitudeInput = document.querySelector('[data-pericia="fortitude"]')?.nextElementSibling.querySelector('.sub-pericia-valor');
+            if (fortitudeInput) {
+                fortitudeInput.addEventListener('change', calcularBloqueioTotal);
+            }
+        });
+
+        // Event listeners para atributos que afetam vida e sanidade
+        document.addEventListener('DOMContentLoaded', function () {
+            // Atributos que afetam vida
+            const resilienciaInput = document.querySelector('[data-attribute="resiliência"]')?.nextElementSibling;
+            if (resilienciaInput) {
+                resilienciaInput.addEventListener('input', calcularVidaTotal);
+            }
+
+            // Atributos que afetam sanidade
+            const intelectoInput = document.querySelector('[data-attribute="intelecto"]')?.nextElementSibling;
+            const carismaInput = document.querySelector('[data-attribute="carisma"]')?.nextElementSibling;
+            const magiaInput = document.querySelector('[data-attribute="magia"]')?.nextElementSibling;
+
+            if (intelectoInput) {
+                intelectoInput.addEventListener('input', calcularSanidadeTotal);
+            }
+            if (carismaInput) {
+                carismaInput.addEventListener('input', calcularSanidadeTotal);
+            }
+            if (magiaInput) {
+                magiaInput.addEventListener('input', calcularSanidadeTotal);
+            }
+
+            // Nível afeta os cálculos
+            const nivelInput = document.querySelector('#nivel');
+            if (nivelInput) {
+                nivelInput.addEventListener('input', function () {
+                    calcularVidaTotal();
+                    calcularSanidadeTotal();
+                });
+            }
+
+            // Classe também afeta os valores
+            const classeInput = document.querySelector('#classe');
+            if (classeInput) {
+                classeInput.addEventListener('change', function () {
+                    calcularVidaTotal();
+                    calcularSanidadeTotal();
+                });
+            }
+        });
+
+        // Funções globais para os seletores
+        window.abrirSeletorRacas = function () {
+            console.log('Abrindo seletor de raças...');
+            const racas = [
+                'Alien', 'Anão', 'Anjo', 'Anjo Caído', 'Banshee',
+                'Ciborgue', 'Demônio', 'Elfo', 'Esqueleto', 'Fae',
+                'Fauno', 'Feiticeiro', 'Humano', 'Kanima', 'Kitsune',
+                'Lobisomem', 'Metamorfo', 'Neko', 'Nogitsune', 'Semideus',
+                'Sereia', 'Siren', 'Súcubo', 'Vampiro'
+            ];
+
+            if (!app.racaDialog) {
+                app.racaDialog = app.dialog.create({
+                    title: 'Selecione uma Raça',
+                    text: '<div class="raca-list">' +
+                        racas.map(raca => `<div class="raca-item" onclick="selecionarRaca('${raca}')">${raca}</div>`).join('') +
+                        '</div>',
+                    buttons: [
+                        {
+                            text: 'Cancelar',
+                            close: true
+                        }
+                    ],
+                    cssClass: 'raca-dialog'
+                });
+            }
+            app.racaDialog.open();
+        }
+
+        window.abrirSeletorOrigens = function () {
+            console.log('Abrindo seletor de origens...');
+            const origens = [
+                'Amnésico', 'Artista', 'Conspiracionista', 'Criança Perdida',
+                'Eremita', 'Escolhido', 'Exilado', 'Experimento', 'Forasteiro',
+                'Ginasta', 'Herdeiro', 'Inventor', 'Jornalista', 'Militar',
+                'Motorista', 'Profeta', 'Programador', 'Psicólogo', 'Religioso',
+                'Servente', 'Universitário', 'Vingativo'
+            ];
+
+            if (!app.origemDialog) {
+                app.origemDialog = app.dialog.create({
+                    title: 'Selecione uma Origem',
+                    text: '<div class="origem-list">' +
+                        origens.map(origem => `<div class="origem-item" onclick="selecionarOrigem('${origem}')">${origem}</div>`).join('') +
+                        '</div>',
+                    buttons: [
+                        {
+                            text: 'Cancelar',
+                            close: true
+                        }
+                    ],
+                    cssClass: 'origem-dialog'
+                });
+            }
+            app.origemDialog.open();
+        }
+
+        window.selecionarRaca = function (raca) {
+            console.log('Raça selecionada:', raca);
+            document.querySelector('#raca').value = raca;
+            app.dialog.close();
+        }
+
+        window.selecionarOrigem = function (origem) {
+            console.log('Origem selecionada:', origem);
+            document.querySelector('#origem').value = origem;
+            app.dialog.close();
+        }
+
+        // Função para calcular bônus do Tecnológico por nível
+        function calcularBonusTecnologico() {
+            const classe = document.querySelector('#classe').value;
+            if (classe === 'Tecnológico') {
+                app.dialog.alert('Esta classe recebe +2 perícias extras e bônus por nível!');
+            }
+        }
+
+        function calcularPontosAtributos(nivel) {
+            if (nivel >= 100) return 30;
+            if (nivel >= 95) return 27;
+            if (nivel >= 80) return 25;
+            if (nivel >= 65) return 23;
+            if (nivel >= 50) return 21;
+            if (nivel >= 35) return 19;
+            if (nivel >= 20) return 17;
+            if (nivel >= 5) return 15;
+            return 12;
+        }
+
+        function atualizarContadoresAtributos() {
+            console.log('Atualizando contadores...');
+
+            // Pega o nível atual
+            const nivel = parseInt(document.querySelector('#nivel').value) || 0;
+            const pontosMaximos = calcularPontosAtributos(nivel);
+
+            // Atualiza contador de testes
+            let totalTestes = 0;
+            const inputsTeste = document.querySelectorAll('.atributo-input[data-grupo="teste"]');
+            console.log('Inputs de teste encontrados:', inputsTeste.length);
+            inputsTeste.forEach(input => {
+                const valor = parseInt(input.value) || 0;
+                totalTestes += valor;
+                console.log('Valor do input teste:', valor);
+            });
+
+            // Atualiza contador de sorte
+            let totalSorte = 0;
+            const inputsSorte = document.querySelectorAll('.atributo-input[data-grupo="sorte"]');
+            console.log('Inputs de sorte encontrados:', inputsSorte.length);
+            inputsSorte.forEach(input => {
+                const valor = parseInt(input.value) || 0;
+                totalSorte += valor;
+                console.log('Valor do input sorte:', valor);
+            });
+
+            // Atualiza os displays com o valor total em ambos os mostradores
+            const totalAtributos = totalTestes + totalSorte;
+
+            // Atualiza os contadores de teste
+            const elementosTeste = ['contador-testes', 'total-testes'];
+            elementosTeste.forEach(id => {
+                const elemento = document.getElementById(id);
+                if (elemento) {
+                    elemento.textContent = `${totalAtributos}/${pontosMaximos}`;
+                }
+            });
+
+            // Atualiza os contadores de sorte
+            const elementosSorte = ['contador-sorte', 'total-sorte'];
+            elementosSorte.forEach(id => {
+                const elemento = document.getElementById(id);
+                if (elemento) {
+                    elemento.textContent = `${totalAtributos}/${pontosMaximos}`;
+                }
+            });
+
+            // Atualiza o total geral
+            const elementoTotal = document.getElementById('total-atributos');
+            if (elementoTotal) {
+                elementoTotal.textContent = `${totalAtributos}/${pontosMaximos}`;
+            }
+
+            // Verifica se os valores excedem o limite
+            if (totalAtributos > pontosMaximos) {
+                app.dialog.alert(`O total de Atributos não pode exceder ${pontosMaximos} pontos no nível atual!`);
+            }
+
+            console.log('Total geral:', totalAtributos, 'Máximo permitido:', pontosMaximos);
+        }
+
+        // Event listeners para atualização dos contadores
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOM carregado, configurando listeners...');
+
+            // Adiciona listeners para todos os inputs de atributos
+            const todosInputs = document.querySelectorAll('.atributo-input');
+            console.log('Total de inputs encontrados:', todosInputs.length);
+
+            todosInputs.forEach(input => {
+                input.addEventListener('input', function () {
+                    console.log('Input alterado:', this.value);
+                    atualizarContadoresAtributos();
+                });
+            });
+
+            // Atualiza contadores iniciais
+            atualizarContadoresAtributos();
+        });
+
+        // Adiciona listener para o nível para atualizar os contadores quando o nível mudar
+        document.querySelector('#nivel').addEventListener('input', function () {
+            const nivel = parseInt(this.value) || 0;
+            // Atualizar a barra de nível
+            atualizarBarraNivel();
+            // Atualizar os contadores de atributos
+            atualizarContadoresAtributos();
+            // Recalcular todos os valores que dependem do nível
+            calcularVidaTotal();
+            calcularManaTotal();
+            calcularSanidadeTotal();
+        });
+
+        // Função para rolar dados
+        function rolarDados(atributo) {
+            const input = document.querySelector(`[data-attribute="${atributo}"]`).nextElementSibling;
+            const quantidadeDados = parseInt(input.value) || 1; // Se não tiver valor, rola 1 dado
+
+            // Array para guardar os resultados dos dados
+            const resultados = [];
+
+            // Rola a quantidade de d20s baseado no valor do atributo
+            for (let i = 0; i < quantidadeDados; i++) {
+                resultados.push(Math.floor(Math.random() * 20) + 1);
+            }
+
+            // Encontra o maior resultado
+            const maiorResultado = Math.max(...resultados);
+
+            // Prepara a mensagem com todos os resultados
+            let mensagem = `Teste de ${atributo}:\n`;
+            mensagem += `Dados rolados (${quantidadeDados}d20): ${resultados.join(', ')}\n`;
+            mensagem += `Melhor resultado: ${maiorResultado}\n`;
+
+            // Verifica se é sucesso crítico (20) ou falha crítica (todos 1)
+            if (maiorResultado === 20) {
+                mensagem = `Sucesso Crítico!\n${mensagem}`;
+            } else if (resultados.every(r => r === 1)) {
+                mensagem = `Falha Crítica!\n${mensagem}`;
+            }
+
+            app.dialog.alert(mensagem);
+        }
+
+        // Adiciona event listeners para os elementos .dice-roll
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.dice-roll').forEach(element => {
+                element.addEventListener('click', function () {
+                    const atributo = this.getAttribute('data-attribute');
+                    rolarDados(atributo);
+                });
+            });
+        });
+
+        // Função para alternar a exibição das sub-perícias
+        function toggleSubPericias() {
+            console.log('Inicializando toggle de sub-perícias...');
+            const pericias = document.querySelectorAll('.pericia-principal');
+            console.log('Perícias encontradas:', pericias.length);
+
+            pericias.forEach(pericia => {
+                pericia.addEventListener('click', function (e) {
+                    console.log('Perícia clicada:', this.textContent);
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Toggle da classe active
+                    this.classList.toggle('active');
+
+                    // Mostra/esconde as sub-perícias
+                    const subPericias = this.nextElementSibling;
+                    console.log('Sub-perícias encontradas:', subPericias);
+
+                    if (subPericias && subPericias.classList.contains('sub-pericias')) {
+                        console.log('Estado atual:', this.classList.contains('active'));
+                        if (this.classList.contains('active')) {
+                            subPericias.style.display = 'block';
+                            subPericias.style.visibility = 'visible';
+                            subPericias.style.opacity = '1';
+                            console.log('Mostrando sub-perícias');
+                        } else {
+                            subPericias.style.display = 'none';
+                            subPericias.style.visibility = 'hidden';
+                            subPericias.style.opacity = '0';
+                            console.log('Escondendo sub-perícias');
+                        }
+                    }
+                });
+            });
+        }
+
+        // Inicializa quando o documento estiver carregado
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('DOM carregado, inicializando perícias...');
+
+            // Inicializa o toggle de sub-perícias
+            toggleSubPericias();
+
+            // Adiciona eventos de clique para os ícones de dado
+            document.querySelectorAll('.dice-icon').forEach(icon => {
+                icon.onclick = function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    rolarD10ParaPericia(this);
+                };
+            });
+
+            // Adiciona eventos de clique para os nomes das perícias
+            document.querySelectorAll('.sub-pericia-nome').forEach(nome => {
+                nome.onclick = function (e) {
+                    if (!e.target.classList.contains('dice-icon')) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        rolarD20ParaPericia(this);
+                    }
+                };
+            });
+        });
+
+        // Função para rolar d10 para perícias
+        function rolarD10ParaPericia(iconElement) {
+            const periciaItem = iconElement.closest('.sub-pericia-item');
+            if (!periciaItem) {
+                app.dialog.alert('Erro: Elemento da perícia não encontrado!');
+                return;
+            }
+
+            const periciaNome = periciaItem.querySelector('.sub-pericia-nome').textContent.trim();
+            const inputElement = periciaItem.querySelector('.sub-pericia-valor');
+            if (!inputElement) {
+                app.dialog.alert('Erro: Campo de valor não encontrado!');
+                return;
+            }
+
+            // Rola o d10
+            const resultado = Math.floor(Math.random() * 10) + 1;
+            inputElement.value = resultado;
+
+            // Se for Fortitude, recalcula o bloqueio
+            if (periciaNome === 'Fortitude') {
+                calcularBloqueioTotal();
+            }
+
+            // Mostra o resultado
+            app.dialog.alert(`Resultado do d10 para ${periciaNome}: ${resultado}`);
+        }
+
+        // Função para rolar d20s baseado no atributo
+        function rolarD20ParaPericia(elemento) {
+            try {
+                // Encontrar o atributo relacionado
+                const periciaPrincipal = elemento.closest('.pericia-item');
+                if (!periciaPrincipal) {
+                    console.error('Não foi possível encontrar o elemento pericia-item');
+                    app.dialog.alert('Erro: Não foi possível encontrar a perícia principal');
+                    return;
+                }
+
+                const periciaTitulo = periciaPrincipal.querySelector('.pericia-principal');
+                if (!periciaTitulo) {
+                    console.error('Não foi possível encontrar o elemento pericia-principal');
+                    app.dialog.alert('Erro: Não foi possível encontrar o título da perícia');
+                    return;
+                }
+
+                const atributoRelacionado = periciaTitulo.textContent.trim().replace('• ', '').toLowerCase();
+                const atributoElement = document.querySelector(`.atributo-item .dice-roll[data-attribute="${atributoRelacionado}"]`);
+                if (!atributoElement) {
+                    console.error('Atributo não encontrado:', atributoRelacionado);
+                    app.dialog.alert(`Erro: Não foi possível encontrar o atributo ${atributoRelacionado}`);
+                    return;
+                }
+
+                const atributoInput = atributoElement.nextElementSibling;
+                if (!atributoInput || !atributoInput.classList.contains('atributo-input')) {
+                    console.error('Input do atributo não encontrado');
+                    app.dialog.alert('Erro: Não foi possível encontrar o valor do atributo');
+                    return;
+                }
+
+                const atributoValor = parseInt(atributoInput.value) || 0;
+                const periciaNome = elemento.childNodes[0].textContent.trim();
+                const subPericiaItem = elemento.closest('.sub-pericia-item');
+
+                if (!subPericiaItem) {
+                    console.error('Sub-perícia não encontrada');
+                    app.dialog.alert('Erro: Não foi possível encontrar os dados da sub-perícia');
+                    return;
+                }
+
+                const periciaValor = parseInt(subPericiaItem.querySelector('.sub-pericia-valor').value) || 0;
+                const bonusRaca = parseInt(subPericiaItem.querySelector('.bonus-raca').textContent.replace('+', '')) || 0;
+                const bonusClasse = parseInt(subPericiaItem.querySelector('.bonus-classe').textContent.replace('+', '')) || 0;
+                const bonusOrigem = parseInt(subPericiaItem.querySelector('.bonus-origem').textContent.replace('+', '')) || 0;
+
+                // Rolagem dos d20s
+                let resultados = [];
+                let maiorResultado = 0;
+                for (let i = 0; i < atributoValor; i++) {
+                    const resultado = Math.floor(Math.random() * 20) + 1;
+                    resultados.push(resultado);
+                    maiorResultado = Math.max(maiorResultado, resultado);
+                }
+
+                // Calcular total final
+                const totalBonus = periciaValor + bonusRaca + bonusClasse + bonusOrigem;
+                const totalFinal = maiorResultado + totalBonus;
+
+                // Criar mensagem
+                const mensagem = `
+                    <div class="mensagem-rolagem">
+                        <div class="mensagem-cabecalho">
+                            <span class="mensagem-titulo">Rolagem de ${periciaNome}</span>
+                            <span class="mensagem-fechar" onclick="this.parentElement.parentElement.remove()">×</span>
+                        </div>
+                        <div class="mensagem-conteudo">
+                            <div class="detalhe-rolagem">
+                                <span class="detalhe-label">${atributoValor}d20:</span>
+                                <span class="detalhe-valor">${resultados.join(', ')}</span>
+                            </div>
+                            <div class="detalhe-rolagem">
+                                <span class="detalhe-label">Maior Valor:</span>
+                                <span class="detalhe-valor">${maiorResultado}</span>
+                            </div>
+                            <div class="detalhe-rolagem">
+                                <span class="detalhe-label">Bônus Total:</span>
+                                <span class="detalhe-valor">+${totalBonus}</span>
+                            </div>
+                            <div class="detalhe-rolagem total-final">
+                                <span class="detalhe-label">Total Final:</span>
+                                <span class="detalhe-valor">${totalFinal}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                const mensagensContainer = document.getElementById('mensagens-rolagem');
+                if (mensagensContainer) {
+                    mensagensContainer.insertAdjacentHTML('beforeend', mensagem);
+                } else {
+                    console.error('Container de mensagens não encontrado');
+                    app.dialog.alert('Erro: Container de mensagens não encontrado');
+                }
+            } catch (error) {
+                console.error('Erro ao rolar d20s:', error);
+                app.dialog.alert('Erro ao realizar a rolagem. Verifique o console para mais detalhes.');
+            }
+        }
+
+        // Adiciona listener para defesa
+        const defesaInput = document.querySelector('#defesa');
+        if (defesaInput) {
+            defesaInput.addEventListener('input', calcularEsquivaTotal);
+        }
+
+        // Função para atualizar a lista de fichas
+        function atualizarListaFichas() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const fichaId = urlParams.get('id');
+
+            if (fichaId) {
+                const personagens = JSON.parse(localStorage.getItem('personagens') || '[]');
+                const index = parseInt(fichaId);
+
+                if (!isNaN(index) && index >= 0) {
+                    // Atualiza a ficha no array
+                    personagens[index] = {
+                        id: fichaId,
+                        nome: document.querySelector('#nome').value || 'Nova Ficha',
+                        nivel: document.querySelector('#nivel').value || '0',
+                        vida: {
+                            atual: document.querySelector('#vida_atual').value || '20',
+                            max: document.querySelector('#vida_max').value || '20'
+                        },
+                        sanidade: {
+                            atual: document.querySelector('#sanidade_atual').value || '10',
+                            max: document.querySelector('#sanidade_max').value || '10'
+                        },
+                        mana: {
+                            atual: document.querySelector('#mana_atual').value || '15',
+                            max: document.querySelector('#mana_max').value || '15'
+                        },
+                        alma: {
+                            atual: document.querySelector('#alma_atual').value || '15',
+                            max: document.querySelector('#alma_max').value || '15'
+                        }
+                    };
+
+                    // Salva o array atualizado
+                    localStorage.setItem('personagens', JSON.stringify(personagens));
+                    console.log('Lista de fichas atualizada:', personagens);
+                }
+            }
+        }
+
+        // Event listeners para atualização em tempo real
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputs = [
+                '#nome',
+                '#nivel',
+                '#vida_atual', '#vida_max',
+                '#sanidade_atual', '#sanidade_max',
+                '#mana_atual', '#mana_max',
+                '#alma_atual', '#alma_max'
+            ];
+
+            inputs.forEach(selector => {
+                const element = document.querySelector(selector);
+                if (element) {
+                    element.addEventListener('input', function () {
+                        atualizarListaFichas();
+                    });
+                }
+            });
+        });
+
+        function limparLocalStorage() {
+            console.log('Limpando localStorage de fichas temporárias...');
+            const personagens = JSON.parse(localStorage.getItem('personagens') || '[]');
+            const keys = Object.keys(localStorage);
+
+            keys.forEach(key => {
+                if (key.startsWith('ficha_') && !personagens.some(p => p.id === key.replace('ficha_', ''))) {
+                    localStorage.removeItem(key);
+                    console.log('Removida ficha temporária:', key);
+                }
+            });
+        }
+
+        // Quando a página carregar
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Página carregada, iniciando setup...');
+            const urlParams = new URLSearchParams(window.location.search);
+            let fichaId = urlParams.get('id');
+
+            if (!fichaId) {
+                // Se não houver ID, cria um novo
+                fichaId = gerarNovoId(); // Função definida abaixo
+                console.log('Novo ID gerado:', fichaId);
+
+                // Atualiza a URL sem recarregar a página
+                window.history.replaceState({}, '', `${window.location.pathname}?id=${fichaId}`);
+
+                // Inicia uma nova ficha
+                limparLocalStorage();
+                aplicarValoresIniciais();
+
+                // Salva a ficha inicial no localStorage
+                salvarFicha(fichaId); // Certifique-se de que a função salvarFicha(id) exista
+            } else {
+                // Tenta carregar a ficha existente
+                console.log('Tentando carregar ficha com ID:', fichaId);
+                const fichaData = localStorage.getItem('ficha_' + fichaId);
+                if (!fichaData) {
+                    console.log('Ficha não encontrada, iniciando nova ficha com ID:', fichaId);
+                    limparLocalStorage();
+                    aplicarValoresIniciais();
+                    salvarFicha(fichaId);
+                } else {
+                    carregarFicha(fichaId); // ⚠️ Certifique-se de que esta função aceite o ID como parâmetro
+                }
+            }
+        });
+
+
+        function atualizarTotalPericia(item) {
+            const valorInput = item.querySelector('.sub-pericia-valor');
+            const bonusRacaSpan = item.querySelector('.bonus-raca');
+            const bonusClasseSpan = item.querySelector('.bonus-classe');
+            const bonusOrigemSpan = item.querySelector('.bonus-origem');
+            const totalSpan = item.querySelector('.total-pericia');
+
+            if (valorInput && totalSpan) {
+                const valor = parseInt(valorInput.value || '0');
+                const bonusRaca = parseInt((bonusRacaSpan?.textContent || '+0').replace('+', ''));
+                const bonusClasse = parseInt((bonusClasseSpan?.textContent || '+0').replace('+', ''));
+                const bonusOrigem = parseInt((bonusOrigemSpan?.textContent || '+0').replace('+', ''));
+
+                const total = valor + bonusRaca + bonusClasse + bonusOrigem;
+                totalSpan.textContent = total;
+            }
+        }
+
+        // Adiciona event listeners para atualizar os totais quando os valores mudarem
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.sub-pericia-item').forEach(item => {
+                const valorInput = item.querySelector('.sub-pericia-valor');
+                if (valorInput) {
+                    valorInput.addEventListener('change', () => atualizarTotalPericia(item));
+                    valorInput.addEventListener('input', () => atualizarTotalPericia(item));
+                }
+            });
+        });
+
+        function atualizarBarraMana() {
+            const manaAtual = parseInt(document.querySelector('#mana_atual').value) || 0;
+            const manaMax = parseInt(document.querySelector('#mana_max').value) || 1;
+            const porcentagem = (manaAtual / manaMax) * 100;
+            document.querySelector('.mana-barra').style.width = porcentagem + '%';
+        }
+
+        function atualizarBarraSanidade() {
+            const sanidadeAtual = parseInt(document.querySelector('#sanidade_atual').value) || 0;
+            const sanidadeMax = parseInt(document.querySelector('#sanidade_max').value) || 1;
+            const porcentagem = Math.min(100, Math.max(0, (sanidadeAtual / sanidadeMax) * 100));
+            const barra = document.querySelector('.sanidade-barra');
+            if (barra) barra.style.width = `${porcentagem}%`;
+        }
+
+        function atualizarBarraAlma() {
+            const almaAtual = parseInt(document.querySelector('#alma_atual')?.value) || 0;
+            const almaMax = parseInt(document.querySelector('#alma_max')?.value) || 1;
+
+            const porcentagem = Math.min(100, Math.max(0, (almaAtual / almaMax) * 100));
+            const barra = document.querySelector('.alma-barra');
+            if (barra) barra.style.width = `${porcentagem}%`;
+        }
+
+        // Variáveis globais do OBS
+        let obsWebSocket = null;
+        let obsConnected = false;
+        let obsScene = '';
+        let obsSource = '';
+
+        // Função única de configuração do OBS
+        function configurarOBS() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get('id');
+
+    if (!id) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Salve a ficha primeiro para gerar o link do OBS'
+        });
+        return;
+    }
+
+    const url = `http://localhost/stream.html?id=${id}`;
+
+    function copiarUrl() {
+        const input = document.getElementById('obsUrl');
+        input.select();
+        input.setSelectionRange(0, 99999);
+        document.execCommand('copy');
+        Swal.fire({
+            icon: 'success',
+            title: 'Copiado!',
+            text: 'URL copiada para a área de transferência',
+            timer: 1500,
+            showConfirmButton: false
+        });
+    }
+
+    const htmlContent = `
+        <div class="mb-3">
+            <p>Para configurar no OBS:</p>
+            <ol style="text-align: left">
+                <li>Adicione uma nova fonte do tipo "Navegador"</li>
+                <li>Cole o link abaixo na URL</li>
+                <li>Defina a largura como <strong>300</strong> e altura como <strong>200</strong></li>
+                <li>Marque a opção <em>"Atualizar navegador quando a cena ficar ativa"</em></li>
+                <li>Se desejar, marque o cache ou defina 2s para atualização</li>
+            </ol>
+            <div class="input-group">
+                <input type="text" id="obsUrl" class="form-control" value="${url}" readonly>
+                <button class="btn btn-outline-secondary" type="button" onclick="copiarUrl()">Copiar</button>
+            </div>
+        </div>`;
+
+    Swal.fire({
+        title: 'Configurar OBS',
+        html: htmlContent,
+        showCancelButton: true,
+        confirmButtonText: 'OK',
+        cancelButtonText: 'Cancelar'
+    });
+}
+        function copiarUrl() {
+            const input = document.getElementById('obsUrl');
+            input.select();
+            document.execCommand('copy');
+            Swal.fire({
+                icon: 'success',
+                title: 'Copiado!',
+                text: 'URL copiada para a área de transferência',
+                timer: 1500,
+                showConfirmButton: false
+            });
+        }
+
+        function obterIdDaUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id');
+        }
+
+        // Event Listener principal
+        document.addEventListener('DOMContentLoaded', function () {
+            // Adiciona evento de clique ao botão de salvar
+            const btnSalvar = document.querySelector('.btn-primary');
+            if (btnSalvar) {
+                btnSalvar.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    console.log('Botão de salvar clicado');
+                    salvarFicha();
+                });
+            }
+
+            // Carrega a ficha se houver um ID na URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const fichaId = urlParams.get('id');
+            if (fichaId) {
+                carregarFicha();
+            }
+        });
+
+        // Constantes para IDs e classes
+        const ELEMENTOS = {
+            vida: {
+                atual: '#vida_atual',
+                max: '#vida_max',
+                barra: '.vida-barra'
+            },
+            sanidade: {
+                atual: '#sanidade_atual',
+                max: '#sanidade_max',
+                barra: '.sanidade-barra'
+            },
+            mana: {
+                atual: '#mana_atual',
+                max: '#mana_max',
+                barra: '.mana-barra'
+            },
+            alma: {
+                atual: '#alma_atual',
+                max: '#alma_max',
+                barra: '.alma-barra'
+            },
+            nivel: {
+                input: '#nivel',
+                barra: '.nivel-progresso'
+            }
+        };
+
+        // Funções de atualização das barras de progresso usando as constantes
+        function atualizarBarraVida() {
+            const vidaAtual = parseInt(document.querySelector(ELEMENTOS.vida.atual)?.value) || 0;
+            const vidaMax = parseInt(document.querySelector(ELEMENTOS.vida.max)?.value) || 1;
+            const porcentagem = Math.min(100, Math.max(0, (vidaAtual / vidaMax) * 100));
+            const barra = document.querySelector(ELEMENTOS.vida.barra);
+            if (barra) barra.style.width = `${porcentagem}%`;
+        }
+
+        function atualizarBarraSanidade() {
+            const sanidadeAtual = parseInt(document.querySelector(ELEMENTOS.sanidade.atual)?.value) || 0;
+            const sanidadeMax = parseInt(document.querySelector(ELEMENTOS.sanidade.max)?.value) || 1;
+            const porcentagem = Math.min(100, Math.max(0, (sanidadeAtual / sanidadeMax) * 100));
+            const barra = document.querySelector(ELEMENTOS.sanidade.barra);
+            if (barra) barra.style.width = `${porcentagem}%`;
+        }
+
+        function atualizarBarraMana() {
+            const manaAtual = parseInt(document.querySelector(ELEMENTOS.mana.atual)?.value) || 0;
+            const manaMax = parseInt(document.querySelector(ELEMENTOS.mana.max)?.value) || 1;
+            const porcentagem = Math.min(100, Math.max(0, (manaAtual / manaMax) * 100));
+            const barra = document.querySelector(ELEMENTOS.mana.barra);
+            if (barra) barra.style.width = `${porcentagem}%`;
+        }
+
+        function atualizarBarraAlma() {
+            const almaAtual = parseInt(document.querySelector(ELEMENTOS.alma.atual)?.value) || 0;
+            const almaMax = parseInt(document.querySelector(ELEMENTOS.alma.max)?.value) || 1;
+            const porcentagem = Math.min(100, Math.max(0, (almaAtual / almaMax) * 100));
+            const barra = document.querySelector(ELEMENTOS.alma.barra);
+            if (barra) barra.style.width = `${porcentagem}%`;
+        }
+
+        function atualizarBarraNivel() {
+            const nivel = parseInt(document.querySelector(ELEMENTOS.nivel.input)?.value) || 0;
+            const porcentagem = Math.min(nivel, 100);
+            const barra = document.querySelector(ELEMENTOS.nivel.barra);
+            if (barra) {
+                barra.style.width = porcentagem + '%';
+                console.log('Barra de nível atualizada:', porcentagem + '%');
+            }
+        }
+    </script>
+</body>
+
+</html>

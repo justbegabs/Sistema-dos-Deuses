@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ciborgue</title>
+
+    <!-- Framework7 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.css">
+    <link rel="stylesheet" href="css/index.css" />
+
+    <!-- Ícones do Framework7 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons/css/framework7-icons.min.css">
+</head>
+
+<body class="pag-2">
+    <div id="app">
+        <div class="view view-main">
+            <div class="page">
+                <!-- Navbar -->
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <div class="left">
+                            <a href="#" onclick="voltarParaRacas()" class="link">
+                                <i class="f7-icons">arrow_left</i>
+                            </a>
+                        </div>
+                        <div class="title">Raças</div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo -->
+                <div class="page-content">
+                    <h1 id="raças">Ciborgue</h1>
+
+                    <h3>Ciborgues são uma raça proveniente de humanos que foram modificados pela tecnologia<br>
+                        a ponto de se tornarem uma nova espécie. </h3>
+
+                    <h3>Possuem partes de equipamentos eletrônicos e melhorias científicas em seus corpos,<br>
+                        podendo ser poucas, a ponto de serem irrisórias, ou muitas, a ponto de serem quase <br>
+                        robôs.</h3>
+
+                    <h3>Ciborgues não precisam ter implantes ou aparência física visível alterada, mas <br>
+                        algo em seus corpos foi modificado, e eles podem ter nascido assim ou terem <br>
+                        sido modificados em vida.</h3>
+
+                    <h3>Foram criados perto do ano de 2100, com o estouro da tecnologia no mundo.</h3>
+
+                    <div id="bonus-info"></div>
+
+                    <div class="hab-mag-ciborgue">
+                        <div class="hab-ciborgue">
+                            <h2 class="hab-0-ciborgue">Habilidades 0-10%</h2>
+                            <a href="guerreiro-da-ciência.html" class="link-box2 hab-link">Guerreiro da Ciência</a>
+                            <a href="narcisismo" class="link-box2 hab-link">Pés de Roda</a>
+                            <a href="narcisismo" class="link-box2 hab-link">Acostumado</a>
+                        </div>
+                        <div class="mag-ciborgue">
+                            <h2 class="mag-0-ciborgue">Magias 0-10%</h2>
+                            <a href="narcisismo" class="link-box2 mag-link">Hélice</a>
+                            <a href="narcisismo" class="link-box2 mag-link">Holograma</a>
+                            <a href="narcisismo" class="link-box2 mag-link">Buster Gun</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Framework7 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.js"></script>
+
+    <script>
+        // Inicializar o Framework7
+        var app = new Framework7({
+            el: '#app',
+            name: 'Meu App',
+            theme: 'auto',
+            data: function () {
+                return {
+                    raceBonuses: {
+                        tecnologia: 3,
+                        explosivos: 3
+                    }
+                }
+            }
+        });
+
+        // Criar a view principal
+        var mainView = app.views.create('.view-main');
+
+        // Exibir os bônus
+        const bonusInfo = document.getElementById('bonus-info');
+        bonusInfo.innerHTML = `
+            <h3>Bônus de Raça:</h3>
+            <h3>• +${app.data.raceBonuses.tecnologia} em Tecnologia</h3>
+            <h3>• +${app.data.raceBonuses.explosivos} em Explosivos</h3>
+        `;
+
+        // Função para voltar à página de raças
+        function voltarParaRacas() {
+            window.location.href = "raças.html";
+        }
+    </script>
+</body>
+
+</html>

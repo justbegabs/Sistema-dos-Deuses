@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Origens</title>
+
+    <!-- Framework7 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.css">
+    <link rel="stylesheet" href="css/index.css" />
+
+    <!-- Ícones do Framework7 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons/css/framework7-icons.min.css">
+
+</head>
+
+<body class="pag-2">
+    <div id="app">
+        <!-- Painel Lateral -->
+        <div class="panel panel-left panel-cover">
+            <div class="view">
+                <div class="page">
+                    <div class="navbar">
+                        <div class="navbar-inner">
+                            <div class="title">Menu</div>
+                            <div class="right">
+                                <a href="#" class="panel-close">Fechar</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-content">
+                        <!-- Searchbar -->
+                        <div class="searchbar-container">
+                            <form class="searchbar">
+                                <div class="searchbar-inner">
+                                    <div class="searchbar-input-wrap">
+                                        <input type="search" placeholder="Buscar...">
+                                        <i class="searchbar-icon"></i>
+                                        <span class="input-clear-button"></span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Lista de Itens -->
+                        <div class="list">
+                            <ul id="race-list">
+                                <li><a href="amnésico.html" class="link-box3">Amnésico</a></li>
+                                <li><a href="artista.html" class="link-box3">Artista</a></li>
+                                <li><a href="conspiracionista.html" class="link-box3">Conspiracionista</a></li>
+                                <li><a href="criança-perdida.html" class="link-box3">Criança Perdida</a></li>
+                                <li><a href="eremita.html" class="link-box3">Eremita</a></li>
+                                <li><a href="escolhido.html" class="link-box3">Escolhido</a></li>
+                                <li><a href="exilado.html" class="link-box3">Exilado</a></li>
+                                <li><a href="experimento.html" class="link-box3">Experimento</a></li>
+                                <li><a href="forasteiro.html" class="link-box3">Forasteiro</a></li>
+                                <li><a href="ginasta.html" class="link-box3">Ginasta</a></li>
+                                <li><a href="herdeiro.html" class="link-box3">Herdeiro</a></li>
+                                <li><a href="inventor.html" class="link-box3">Inventor</a></li>
+                                <li><a href="jornalista.html" class="link-box3">Jornalista</a></li>
+                                <li><a href="militar.html" class="link-box3">Militar</a></li>
+                                <li><a href="motorista.html" class="link-box3">Motorista</a></li>
+                                <li><a href="profeta.html" class="link-box3">Profeta</a></li>
+                                <li><a href="programador.html" class="link-box3">Programador</a></li>
+                                <li><a href="psicólogo.html" class="link-box3">Psicólogo</a></li>
+                                <li><a href="religioso.html" class="link-box3">Religioso</a></li>
+                                <li><a href="servente.html" class="link-box3">Servente</a></li>
+                                <li><a href="universitário.html" class="link-box3">Universitário</a></li>
+                                <li><a href="vingativo.html" class="link-box3">Vingativo</a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Caso não encontre nada -->
+                        <div class="block searchbar-not-found">
+                            <p>Nenhum resultado encontrado.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="view view-main">
+            <div class="page" data-name="home">
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <div class="left">
+                            <a href="#" onclick="voltarParaIndex()" class="link">
+                                <i class="f7-icons">arrow_left</i>
+                            </a>
+                        </div>
+                        <div class="title">Meu App</div>
+                        <div class="right">
+                            <a href="#" class="link panel-open" data-panel=".panel-left">
+                                <i class="f7-icons">menu</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="page-content">
+                    <h1 id="origens">Origens</h1>
+                    <h3>
+                        Todas as origens foram criadas há muito, muito tempo, mas não foram todas ao mesmo tempo.<br>
+                        Algumas foram criadas antes, e isso criou sentimentos de orgulho e de vaidade em relação às
+                        outras.<br><br>
+                        Com o tempo o que eram apenas sentimentos foram se tornando ações. Ações de violência, que logo
+                        se
+                        escalonaram para guerras entre as origens, que foram criadas para viver harmoniosamente.<br><br>
+                        Algumas origens eram tão vaidosas que se achavam até no direito de criar outras em suas imagens,
+                        mas com
+                        modificações, o que não deixou os Deuses felizes.
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Framework7 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.js"></script>
+
+    <script>
+        var app = new Framework7({
+            el: '#app',
+            name: 'Meu App',
+            theme: 'auto',
+            panel: {
+                swipe: true,
+            },
+            routes: [
+                {
+                    path: '/:page.html',
+                    url: '{{page}}.html',
+                    on: {
+                        pageBeforeIn: function (event, page) {
+                            // Verificar se a página existe
+                            fetch(page.route.url)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        app.dialog.alert('Página não encontrada', 'Erro');
+                                        app.views.main.router.back();
+                                    }
+                                })
+                                .catch(() => {
+                                    app.dialog.alert('Página não encontrada', 'Erro');
+                                    app.views.main.router.back();
+                                });
+                        }
+                    }
+                },
+            ],
+        });
+
+        // Função para voltar à página inicial
+        function voltarParaIndex() {
+            window.location.href = "index.html";
+        }
+
+        // Inicializar a searchbar
+        var searchbar = app.searchbar.create({
+            el: '.searchbar',
+            searchContainer: '.list',
+            searchIn: '.link-box3',
+            on: {
+                search: function (sb, query) {
+                    if (query) {
+                        let hasVisibleItems = false;
+                        // Esconde todos os itens
+                        document.querySelectorAll('#race-list li').forEach(function (item) {
+                            if (item.textContent.toLowerCase().includes(query.toLowerCase())) {
+                                item.style.display = '';
+                                hasVisibleItems = true;
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        });
+
+                        // Mostra/esconde a mensagem de "não encontrado"
+                        const notFound = document.querySelector('.searchbar-not-found');
+                        notFound.style.display = hasVisibleItems ? 'none' : 'block';
+                    } else {
+                        // Mostra todos os itens quando a busca está vazia
+                        document.querySelectorAll('#race-list li').forEach(function (item) {
+                            item.style.display = '';
+                        });
+                        // Esconde a mensagem de "não encontrado"
+                        document.querySelector('.searchbar-not-found').style.display = 'none';
+                    }
+                }
+            },
+            removeDiacritics: true
+        });
+
+        // Adicionar evento de clique para os links
+        document.querySelectorAll('#race-list a').forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const href = this.getAttribute('href');
+                window.location.href = href;
+            });
+        });
+    </script>
+</body>
+
+</html>

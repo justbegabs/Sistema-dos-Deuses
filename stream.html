@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Status do Personagem</title>
+  <style>
+    .barra { width: 100%; height: 20px; background: #ccc; margin: 5px 0; border-radius: 5px; }
+    .barra-progresso { height: 100%; border-radius: 5px; transition: width 0.3s; }
+    .barra-vida { background: red; }
+    .barra-sanidade { background: blue; }
+    .barra-mana { background: purple; }
+    .barra-alma { background: black; }
+    .status { font-family: sans-serif; max-width: 300px; margin: auto; }
+  </style>
+</head>
+<body>
+  <div class="status">
+    <div>Vida: <span id="vida">0/0</span></div>
+    <div class="barra"><div class="barra-progresso barra-vida" id="barra-vida"></div></div>
+
+    <div>Sanidade: <span id="sanidade">0/0</span></div>
+    <div class="barra"><div class="barra-progresso barra-sanidade" id="barra-sanidade"></div></div>
+
+    <div>Mana: <span id="mana">0/0</span></div>
+    <div class="barra"><div class="barra-progresso barra-mana" id="barra-mana"></div></div>
+
+    <div>Alma: <span id="alma">0/0</span></div>
+    <div class="barra"><div class="barra-progresso barra-alma" id="barra-alma"></div></div>
+  </div>
+
+  <script>
+    let obsWebSocket = null;
+    let obsConnected = false;
+    let obsSourceName = 'Status RPG';
+
+    function atualizarStatus() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const fichaId = urlParams.get('id');
+      if (!fichaId) return;
+
+      const personagens = JSON.parse(localStorage.getItem('personagens') || '[]');
+      const ficha = personagens[fichaId];
+      if (!ficha) return;
+
+      const vidaAtual = parseInt(ficha.vida?.atual) || 0;
+      const vidaMax = parseInt(ficha.vida?.max) || 1;
+      const sanidadeAtual = parseInt(ficha.sanidade?.atual) || 0;
+      const sanidadeMax = parseInt(ficha.sanidade?.max) || 1;
+      const manaAtual = parseInt(ficha.mana?.atual) || 0;
+      const manaMax = parseInt(ficha.mana?.max) || 1;
+      const almaAtual = parseInt(ficha.alma?.atual) || 0;
+      const almaMax = parseInt(ficha.alma?.max) || 1;
+
+      document.getElementById('vida').textContent = `${vidaAtual}/${vidaMax}`;
+      document.getElementById('sanidade').textContent = `${sanidadeAtual}/${sanidadeMax}`;
+      document.getElementById('mana').textContent = `${manaAtual}/${manaMax}`;
+      document.getElementById('alma').textContent = `${almaAtual}/${almaMax}`;
+
+      const pct = (a, m) => Math.min(100, Math.max(0, (a / m) * 100));
+      document.getElementById('barra-vida').style.width = pct(vidaAtual, vidaMax) + '%';
+      document.getElementById('barra-sanidade').style.width = pct(sanidadeAtual, sanidadeMax) + '%';
+      document.getElementById('barra-mana').style.width = pct(manaAtual, manaMax) + '%';
+      document.getElementById('barra-alma').style.width = pct(almaAtual, almaMax) + '%';
+
+      if (obsConnected) {
+        const texto = `Vida: ${vidaAtual}/${vidaMax}\nSanidade: ${sanidadeAtual}/${sanidadeMax}\nMana: ${manaAtual}/${manaMax}\nAlma: ${almaAtual}/${almaMax}`;
+        obsWebSocket.send(JSON.stringify({
+          op: 6,
+          d: {
+            requestType: 'SetInputSettings',
+            requestId: 'atualizaStatus',
+            inputName: obsSourceName,
+            inputSettings: {
+              text: texto
+            }
+          }
+        }));
+      }
+    }
+
+    // Atualiza a cada segundo
+    setInterval(atualizarStatus, 1000);
+    atualizarStatus();
+
+    // (Opcional) conectar ao OBS WebSocket 5.x
+    function conectarOBS() {
+      try {
+        obsWebSocket = new WebSocket('ws://localhost:4455');
+        obsWebSocket.onopen = () => {
+          console.log('Conectado ao OBS');
+          obsWebSocket.send(JSON.stringify({
+            op: 1,
+            d: {
+              rpcVersion: 1,
+              eventSubscriptions: 33
+              // se tiver senha: authentication: "SENHA_AQUI"
+            }
+          }));
+        };
+
+        obsWebSocket.onmessage = e => {
+          const data = JSON.parse(e.data);
+          if (data.op === 2) {
+            console.log('Autenticado com OBS');
+            obsConnected = true;
+          }
+        };
+
+        obsWebSocket.onclose = () => {
+          console.warn('WebSocket OBS desconectado');
+          obsConnected = false;
+        };
+
+        obsWebSocket.onerror = err => {
+          console.error('Erro OBS WebSocket:', err);
+        };
+      } catch (e) {
+        console.error('Erro ao tentar conectar com OBS:', e);
+      }
+    }
+
+    // opcional: iniciar conexão automática
+    // conectarOBS();
+  </script>
+</body>
+</html>

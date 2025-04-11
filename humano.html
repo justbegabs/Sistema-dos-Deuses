@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" href="css/index.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&family=Pacifico&display=swap"
+        rel="stylesheet">
+
+    <script type="text/javascript" src="index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
+    <title>Sistema de Deus</title>
+</head>
+
+<body class="pag-2">
+    <style>
+        @font-face {
+            font-family: 'AstronBoyWonder.ttf';
+            src: url(astron-boy-wonder/AstronBoyWonder.ttf);
+        }
+
+        @font-face {
+            font-family: 'semi-coder';
+            src: url(semi-coder/Semi-Coder-Regular.otf);
+        }
+
+        @font-face {
+            font-family: 'elektra';
+            src: url(elektra/Elektra.ttf);
+        }
+
+        @font-face {
+            font-family: 'skirmisher';
+            src: url(skirmisher/skirmisher.ttf);
+        }
+
+        @font-face {
+            font-family: 'sketch-gothic-school';
+            src: url(sketch-gothic-school/Sketch\ Gothic\ School.ttf);
+        }
+
+        @font-face {
+            font-family: 'fly-boy';
+            src: url(fly-boy/FlyBoyBB.ttf);
+        }
+
+        @font-face {
+            font-family: 'coralines-cat';
+            src: url(coralines-cat/Coralines-Cat.ttf);
+        }
+
+        @font-face {
+            font-family: 'midnight-in-october';
+            src: url(midnight-in-october/Midnight-in-October.ttf);
+        }
+
+        @font-face {
+            font-family: 'sketch-gothic-school';
+            src: url(sketch-gothic-school/Sketch-Gothic-School.ttf);
+        }
+
+        @font-face {
+            font-family: 'cardinal';
+            src: url(cardinal/Cardinal.ttf);
+        }
+    </style>
+
+
+    <h1 id="raças">Humano</h1>
+
+    <h3 class=>Não possuem muita distinção dos outros povos fisicamente.<br>
+        São mais comuns dentre todos os outros, mas isso faz eles terem pouca Alma<br>
+        Sua melhor característica é poder se misturar facilmente nas multidões.<br>
+        Se acham superiores por terem sido os primeiros seres pensantes criados no Universo.<br>
+        São a base para a maioria das outras raças.</h3>
+    <h3>O egoísmo e a visão de que os humanos estavam no centro de tudo os levou<br>
+        a criar espécies em suas imagens, tais quais Kitsunes, Nekos e Ciborgues.</h3>
+
+    <h3>Nasceram com o Dom do Lívre-Arbítrio, então podem escolher entre a Luz e as Trevas.</h3>
+    <div class="hab-mag-humano">
+        <div class="hab-humano">
+            <h2 class="hab-0-humano">Habilidades 0-10%</h2>
+            <a href="narcisismo.html" class="link-box2 hab-link">Narcisismo</a>
+            <a href="narcisismo" class="link-box2 hab-link">Manipulação</a>
+            <a href="narcisismo" class="link-box2 hab-link">Tríade Obscura</a>
+        </div>
+        <div class="mag-humano">
+            <h2 class="mag-0-humano">Magias 0-10%</h2>
+            <a href="narcisismo" class="link-box2 mag-link">Lumiére</a>
+            <a href="narcisismo" class="link-box2 mag-link">Chave de Acesso</a>
+            <a href="narcisismo" class="link-box2 mag-link">Colapso Neural</a>
+        </div>
+    </div>
+
+    <script>
+         var app = new Framework7({
+            el: '#app',
+            name: 'Meu App',
+            theme: 'auto',
+            data: function () {
+                return {
+                    raceBonuses: {
+                        furtividade: 3,
+                        trapaça: 3,
+                        alma: -3
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

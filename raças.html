@@ -1,118 +1,182 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link rel="stylesheet" href="index.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+  <title>Teste de Ícones e Menu Framework7</title>
 
-  <script type="text/javascript" src="index.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
-  <title>Raças</title>
+  <!-- Framework7 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.css">
+  <link rel="stylesheet" href="css/index.css" />
+
+  <!-- Ícones do Framework7 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons/css/framework7-icons.min.css">
+
 </head>
 
 <body class="pag-2">
-  <style>
-    @font-face {
-      font-family: 'AstronBoyWonder.ttf';
-      src: url(astron-boy-wonder/AstronBoyWonder.ttf);
+  <div id="app">
+    <!-- Painel Lateral -->
+    <div class="panel panel-left panel-cover">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="title">Menu</div>
+              <div class="right">
+                <a href="#" class="panel-close">Fechar</a>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <!-- Searchbar -->
+            <div class="searchbar-container">
+              <form class="searchbar">
+                <div class="searchbar-inner">
+                  <div class="searchbar-input-wrap">
+                    <input type="search" placeholder="Buscar...">
+                    <i class="searchbar-icon"></i>
+                    <span class="input-clear-button"></span>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- Lista de Itens -->
+            <div class="list">
+              <ul id="race-list">
+                <li><a href="#" class="link-box3" data-url="/www/alien.html">Alien</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/anão.html">Anão</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/anjo.html">Anjo</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/anjo-caído.html">Anjo Caído</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/banshee.html">Banshee</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/bruxa.html">Bruxa</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/ciborgue.html">Ciborgue</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/demônio.html">Demônio</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/elfo.html">Elfo</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/esqueleto.html">Esqueleto</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/fae.html">Fae</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/fauno.html">Fauno/Sátiro</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/humano.html">Humano</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/kanima.html">Kanima</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/kitsune.html">Kitsune</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/lobisomem.html">Lobisomem</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/metamorfo.html">Metamorfo</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/neko.html">Neko</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/nogitsune.html">Nogitsune</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/semideus.html">Semideus</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/sereia.html">Sereia/Tritão</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/siren.html">Siren</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/súcubo.html">Súcubo</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/vampiro.html">Vampiro</a></li>
+              </ul>
+            </div>
+
+            <!-- Caso não encontre nada -->
+            <div class="block searchbar-not-found">
+              <p>Nenhum resultado encontrado.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="view view-main">
+      <div class="page" data-name="home">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="left">
+              <a href="#" onclick="voltarParaIndex()" class="link">
+                <i class="f7-icons">arrow_left</i>
+              </a>
+            </div>
+            <div class="title">Meu App</div>
+            <div class="right">
+              <a href="#" class="link panel-open" data-panel=".panel-left">
+                <i class="f7-icons">menu</i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+          <h1 id="raças">Raças</h1>
+          <h3>
+            Todas as raças foram criadas há muito, muito tempo, mas não foram todas ao mesmo tempo.<br>
+            Algumas foram criadas antes, e isso criou sentimentos de orgulho e de vaidade em relação às outras.<br><br>
+            Com o tempo o que eram apenas sentimentos foram se tornando ações. Ações de violência, que logo se
+            escalonaram para guerras entre as raças, que foram criadas para viver harmoniosamente.<br><br>
+            Algumas raças eram tão vaidosas que se achavam até no direito de criar outras em suas imagens, mas com
+            modificações, o que não deixou os Deuses felizes.
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Framework7 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.js"></script>
+
+  <script>
+    var app = new Framework7({
+      el: '#app',
+      name: 'Meu App',
+      theme: 'auto',
+      panel: {
+        swipe: true,
+      },
+    });
+
+    // Função para voltar à página inicial
+    function voltarParaIndex() {
+      window.location.href = "/www/index.html";
     }
 
-    @font-face {
-      font-family: 'semi-coder';
-      src: url(semi-coder/Semi-Coder-Regular.otf);
-    }
+    // Inicializar a searchbar
+    var searchbar = app.searchbar.create({
+      el: '.searchbar',
+      searchContainer: '.list',
+      searchIn: '.link-box3',
+      on: {
+        search: function (sb, query) {
+          if (query) {
+            let hasVisibleItems = false;
+            // Esconde todos os itens
+            document.querySelectorAll('#race-list li').forEach(function (item) {
+              if (item.textContent.toLowerCase().includes(query.toLowerCase())) {
+                item.style.display = '';
+                hasVisibleItems = true;
+              } else {
+                item.style.display = 'none';
+              }
+            });
 
-    @font-face {
-      font-family: 'elektra';
-      src: url(elektra/Elektra.ttf);
-    }
+            // Mostra/esconde a mensagem de "não encontrado"
+            const notFound = document.querySelector('.searchbar-not-found');
+            notFound.style.display = hasVisibleItems ? 'none' : 'block';
+          } else {
+            // Mostra todos os itens quando a busca está vazia
+            document.querySelectorAll('#race-list li').forEach(function (item) {
+              item.style.display = '';
+            });
+            // Esconde a mensagem de "não encontrado"
+            document.querySelector('.searchbar-not-found').style.display = 'none';
+          }
+        }
+      },
+      removeDiacritics: true
+    });
 
-    @font-face {
-      font-family: 'skirmisher';
-      src: url(skirmisher/skirmisher.ttf);
-    }
-
-    @font-face {
-      font-family: 'sketch-gothic-school';
-      src: url(sketch-gothic-school/Sketch\ Gothic\ School.ttf);
-    }
-
-    @font-face {
-      font-family: 'fly-boy';
-      src: url(fly-boy/FlyBoyBB.ttf);
-    }
-
-    @font-face {
-      font-family: 'coralines-cat';
-      src: url(coralines-cat/Coralines-Cat.ttf);
-    }
-
-    @font-face {
-      font-family: 'midnight-in-october';
-      src: url(midnight-in-october/Midnight-in-October.ttf);
-    }
-
-    @font-face {
-      font-family: 'sketch-gothic-school';
-      src: url(sketch-gothic-school/Sketch-Gothic-School.ttf);
-    }
-
-    @font-face {
-      font-family: 'cardinal';
-      src: url(cardinal/Cardinal.ttf);
-    }
-
-  </style>
-
-   <h1 id="raças">Raças</h1>
-   <h3>Todas as raças foram criadas há muito, muito tempo, mas não foram todas ao mesmo tempo.<br>
-  Algumas foram criadas antes, e isso criou sentimentos de orgulho e de vaidade em relação às outras.<br>
-Com o tempo o que eram apenas sentimentos foram se tornando ações. Ações de violência, que logo se escalonaram para guerras entre as raças, que foram criadas para viver harmoniosamente.<br>
-Algumas raças eram tão vaidosas que se achavam até no direito de criar outras em suas imagens, mas com modificações, o que não deixou os Deuses felizes.</h3>
-   <div class="raças-pag">
-<a href="alien.html" class="link-box1">Alien</a>
-<a href="anão.html" class="link-box1">Anão</a>
-<a href="anjo.html" class="link-box1">Anjo</a>
-<a href="anjo-caído.html" class="link-box1">Anjo Caído</a>
-<a href="banshee.html" class="link-box1">Banshee</a>
-<a href="bruxa.html" class="link-box1">Bruxa</a>
-<a href="ciborgue.html" class="link-box1">Ciborgue</a>
-<a href="demônio.html" class="link-box1">Demônio</a>
-<a href="elfo.html" class="link-box1">Elfo</a>
-<a href="esqueleto.html" class="link-box1">Esqueleto</a>
-<a href="fae.html" class="link-box1">Fae</a>
-<a href="fauno.html" class="link-box1">Fauno/Sátiro</a>
-<a href="humano.html" class="link-box1">Humano</a>
-<a href="kanima.html" class="link-box1">Kanima</a>
-<a href="kitsune.html" class="link-box1">Kitsune</a>
-<a href="lobisomem.html" class="link-box1">Lobisomem</a>
-<a href="metamorfo.html" class="link-box1">Metamorfo</a>
-<a href="neko.html" class="link-box1">Neko</a>
-<a href="nogitsune.html" class="link-box1">Nogitsune</a>
-<a href="semideus.html" class="link-box1">Semideus</a>
-<a href="semideus.html" class="link-box1">Sereia/Tritão</a>
-<a href="siren.html" class="link-box1">Siren</a>
-<a href="súcubo.html" class="link-box1">Súcubo</a>
-<a href="vampiro.html" class="link-box1">Vampiro</a>
-</div>
+    // Adicionar evento de clique para os links das raças
+    Dom7('#race-list a').on('click', function (e) {
+      e.preventDefault();
+      const url = Dom7(this).attr('data-url');
+      if (url) {
+        window.location.href = url;
+      }
+    });
+  </script>
 </body>
+
+</html>

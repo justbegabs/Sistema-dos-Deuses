@@ -1,70 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="index.css" />
-    <script type="text/javascript" src="index.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
-    <title>Sistema de Deus</title>
+    <title>Fichas de RPG</title>
+
+    <!-- Framework7 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.css">
+    <link rel="stylesheet" href="css/index.css" />
+    <link rel="stylesheet" href="css/ficha.css" />
+
+    <!-- Ícones do Framework7 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons/css/framework7-icons.min.css">
+
+    <!-- Fontes do Sistema -->
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Charmonman:wght@400;700&display=swap" rel="stylesheet"> -->
 </head>
 
 <body>
-    <style>
-        @font-face {
-            font-family: 'AstronBoyWonder.ttf';
-            src: url(astron-boy-wonder/AstronBoyWonder.ttf);
+    <div id="app">
+        <div class="view view-main">
+            <div class="page">
+                <div class="navbar">
+                    <div class="navbar-bg"></div>
+                    <div class="navbar-inner">
+                        <div class="left">
+                            <a href="#" class="link" onclick="window.location.href='index.html'">
+                                <i class="icon f7-icons">arrow_left</i>
+                            </a>
+                        </div>
+                        <div class="title">Fichas de RPG</div>
+                    </div>
+                </div>
+
+                <div class="page-content">
+                    <div class="list media-list">
+                        <ul id="lista-fichas">
+                            <!-- As fichas serão inseridas aqui dinamicamente -->
+                        </ul>
+                    </div>
+
+                    <!-- Botão flutuante para adicionar nova ficha -->
+                    <div class="fab fab-right-bottom">
+                        <a href="#" onclick="criarNovaFicha()">
+                            <i class="icon f7-icons">plus</i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Framework7 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.js"></script>
+    <script>
+        // Inicializar Framework7
+        const app = new Framework7({
+            el: '#app',
+            name: 'Fichas RPG',
+            theme: 'auto',
+            dialog: {
+                buttonOk: 'Excluir',
+                buttonCancel: 'Cancelar'
+            }
+        });
+
+        const mainView = app.views.create('.view-main');
+
+        // Carregar lista de fichas
+        function carregarListaFichas() {
+            const personagens = JSON.parse(localStorage.getItem('personagens') || '[]');
+            const listaFichas = document.getElementById('lista-fichas');
+
+            if (personagens.length === 0) {
+                listaFichas.innerHTML = `
+                    <div style="text-align: center; padding: 2rem;">
+                        <p>Nenhuma ficha criada ainda.</p>
+                        <p>Clique no botão + para criar uma nova ficha.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            listaFichas.innerHTML = '';
+            personagens.forEach((personagem, index) => {
+                const li = document.createElement('li');
+                li.className = 'swipeout';
+                li.innerHTML = `
+                    <div class="swipeout-content">
+                        <a href="javascript:void(0)" onclick="abrirFicha(${index})" class="item-link item-content">
+                            <div class="item-inner">
+                                <div class="item-title-row">
+                                    <div class="item-title">${personagem.nome || 'Nova Ficha'}</div>
+                                    <div class="item-after">Nível ${personagem.nivel || '0'}</div>
+                                </div>
+                                <div class="item-subtitle">
+                                    Vida: ${personagem.vida?.atual || '0'}/${personagem.vida?.max || '0'} | 
+                                    Sanidade: ${personagem.sanidade?.atual || '0'}/${personagem.sanidade?.max || '0'}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="swipeout-actions-right">
+                        <a href="#" class="color-red" onclick="confirmarExclusao(${index}); return false;">
+                            Excluir
+                        </a>
+                    </div>
+                `;
+                listaFichas.appendChild(li);
+            });
         }
 
-        @font-face {
-            font-family: 'semi-coder';
-            src: url(semi-coder/Semi-Coder-Regular.otf);
+        // Abrir ficha
+        function abrirFicha(index) {
+            window.location.href = `ficha-detalhe.html?id=${index}`;
         }
 
-        @font-face {
-            font-family: 'elektra';
-            src: url(elektra/Elektra.ttf);
+        // Criar nova ficha
+        function criarNovaFicha() {
+            const personagens = JSON.parse(localStorage.getItem('personagens') || '[]');
+            personagens.push({
+                nome: 'Nova Ficha',
+                nivel: 0,
+                vida: {
+                    atual: 20,
+                    max: 20
+                },
+                sanidade: {
+                    atual: 10,
+                    max: 10
+                },
+                alma: {
+                    atual: 15,
+                    max: 15
+                },
+                mana: {
+                    atual: 15,
+                    max: 15
+                },
+                defesa: 10,
+                esquiva: 10,
+                bloqueio: 0,
+                atributos: {
+                    teste: [],
+                    sorte: []
+                }
+            });
+            localStorage.setItem('personagens', JSON.stringify(personagens));
+            carregarListaFichas();
+
+            // Redirecionar para a página de detalhes da nova ficha
+            const novoId = personagens.length - 1;
+            window.location.href = `ficha-detalhe.html?id=${novoId}`;
         }
 
-        @font-face {
-            font-family: 'skirmisher';
-            src: url(skirmisher/skirmisher.ttf);
+        // Função para confirmar exclusão
+        function confirmarExclusao(index) {
+            app.dialog.confirm(
+                'Tem certeza que deseja excluir esta ficha?',
+                'Excluir Ficha',
+                function () {
+                    excluirFicha(index);
+                }
+            );
         }
 
-        @font-face {
-            font-family: 'sketch-gothic-school';
-            src: url(sketch-gothic-school/Sketch\ Gothic\ School.ttf);
+        // Função para excluir ficha
+        function excluirFicha(index) {
+            const personagens = JSON.parse(localStorage.getItem('personagens') || '[]');
+            personagens.splice(index, 1);
+            localStorage.setItem('personagens', JSON.stringify(personagens));
+            carregarListaFichas();
+            app.dialog.alert('Ficha excluída com sucesso!');
         }
 
-        @font-face {
-            font-family: 'fly-boy';
-            src: url(fly-boy/FlyBoyBB.ttf);
-        }
-
-        @font-face {
-            font-family: 'coralines-cat';
-            src: url(coralines-cat/Coralines-Cat.ttf);
-        }
-
-        @font-face {
-            font-family: 'midnight-in-october';
-            src: url(midnight-in-october/Midnight-in-October.ttf);
-        }
-
-        @font-face {
-            font-family: 'sketch-gothic-school';
-            src: url(sketch-gothic-school/Sketch-Gothic-School.ttf);
-        }
-
-        @font-face {
-            font-family: 'cardinal';
-            src: url(cardinal/Cardinal.ttf);
-        }
-    </style>
-
-    <h1>Ficha - Nome</h1>
-    
-
+        // Inicializar a lista de fichas quando a página carregar
+        document.addEventListener('DOMContentLoaded', () => {
+            carregarListaFichas();
+        });
+    </script>
 </body>
+
+</html>

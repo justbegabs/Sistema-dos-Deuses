@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anjo Caído</title>
+
+    <!-- Framework7 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.css">
+    <link rel="stylesheet" href="css/index.css" />
+
+    <!-- Ícones do Framework7 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons/css/framework7-icons.min.css">
+</head>
+
+<body class="pag-2">
+    <div id="app">
+        <div class="view view-main">
+            <div class="page">
+                <!-- Navbar -->
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <div class="left">
+                            <a href="#" onclick="voltarParaRacas()" class="link">
+                                <i class="f7-icons">arrow_left</i>
+                            </a>
+                        </div>
+                        <div class="title">Anjo Caído</div>
+                    </div>
+                </div>
+
+                <!-- Conteúdo -->
+                <div class="page-content">
+                    <h1>Anjo Caído</h1>
+                    <p>Descrição da raça Anjo Caído.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Framework7 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.js"></script>
+
+    <script>
+        // Inicializar o Framework7
+        var app = new Framework7({
+            el: '#app',
+            name: 'Meu App',
+            theme: 'auto'
+        });
+
+        // Criar a view principal
+        var mainView = app.views.create('.view-main');
+
+        // Função para voltar à página de raças
+        function voltarParaRacas() {
+            window.location.href = "raças.html";
+        }
+    </script>
+</body>
+
+</html>
