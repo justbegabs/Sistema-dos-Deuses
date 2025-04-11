@@ -1,0 +1,621 @@
+/* Estilos gerais */
+body {
+    background: linear-gradient(135deg, #8B4513, #D2691E, #E67E22) fixed;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+/* Grid de informações */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 16px;
+    background-color: rgba(200, 76, 5, 0.4);
+    border-radius: 8px;
+    margin: 16px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.info-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.info-label {
+    color: #ffffff;
+    font-size: 14px;
+}
+
+.info-input {
+    background: rgba(210, 105, 30, 0.1);
+    border: none;
+    border-bottom: 2px solid rgba(210, 105, 30, 0.5);
+    color: white;
+    padding: 8px;
+    width: 100%;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.info-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.info-input:focus {
+    outline: none;
+    border-bottom-color: #ffffff;
+}
+
+/* Grid de Atributos Vitais */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.grid-box {
+    background: rgba(200, 76, 5, 0.4);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.grid-box h2 {
+    color: #ffffff;
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+    padding-bottom: 8px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Nível */
+.nivel-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.nivel-input-container {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nivel-barra {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.nivel-progresso {
+    height: 100%;
+    background: linear-gradient(90deg, #4a9eff, #8cc5ff);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* Atributos vitais */
+.atributos-vitais {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.vida-container {
+    margin: 0;
+    text-align: center;
+    margin-top: -16px;
+}
+
+.sanidade-container {
+    margin: 0;
+    text-align: center;
+    margin-top: 16px;
+}
+
+.alma-container,
+.mana-container {
+    margin: 0;
+    text-align: center;
+    margin-top: 32px;
+}
+
+.mana-circulo {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+}
+
+.mana-circulo-input {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    width: 30px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.atributo-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.atributo-valores {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-left: 8px;
+}
+
+.atributo-valores input {
+    width: 50px;
+    text-align: center;
+}
+
+.barra-progresso {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.vida-barra,
+.sanidade-barra,
+.mana-barra,
+.alma-barra,
+.nivel-progresso {
+    height: 100%;
+    width: 0;
+    transition: width 0.3s ease;
+    max-width: 100%;
+}
+
+.vida-barra {
+    background: linear-gradient(90deg, #ff3333, #ff6666);
+}
+
+.sanidade-barra {
+    background: linear-gradient(90deg, #9933ff, #b366ff);
+}
+
+.mana-barra {
+    background: linear-gradient(90deg, #3333ff, #6666ff);
+}
+
+.alma-barra {
+    background: linear-gradient(90deg, #ffcc00, #ffdb4d);
+}
+
+.nivel-progresso {
+    background: linear-gradient(90deg, #4a9eff, #8cc5ff);
+}
+
+/* Cores específicas para cada barra */
+.vida-container .barra-progresso div {
+    background: #FF4500;
+}
+
+.sanidade-container .barra-progresso div {
+    background: #FFA500;
+}
+
+.alma-container .barra-progresso div {
+    background: #FFD700;
+}
+
+.mana-container .barra-progresso div {
+    background: #FFA07A;
+}
+
+.nivel-barra .nivel-progresso {
+    background: #FFD700;
+}
+
+/* Lista de fichas */
+.list {
+    margin: 0;
+}
+
+.list .item-link {
+    color: #fff;
+}
+
+.list .item-inner {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin: 0.5rem;
+}
+
+.list .item-title {
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.list .item-subtitle {
+    color: #aaa;
+}
+
+.list .item-after {
+    color: #4a9eff;
+}
+
+/* Botão flutuante */
+.fab a {
+    background: linear-gradient(135deg, #4a9eff 0%, #8cc5ff 100%);
+}
+
+/* Swipeout */
+.swipeout {
+    position: relative;
+    overflow: hidden;
+}
+
+.swipeout-content {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    margin: 0.5rem;
+}
+
+.swipeout-actions-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    display: flex;
+    align-items: stretch;
+}
+
+.swipeout-actions-right a {
+    background: #ff4a4a;
+    color: white;
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    text-decoration: none;
+    height: 100%;
+    margin: 0.5rem 0;
+}
+
+.swipeout-actions-right a:active {
+    background: #cc3939;
+}
+
+/* Atributos e Perícias */
+.atributos-lista,
+.pericias-lista {
+    display: grid;
+    gap: 12px;
+}
+
+.atributo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+}
+
+.atributo-item span {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.atributo-item input {
+    background: transparent;
+    border: none;
+    color: white;
+    text-align: right;
+    width: 60px;
+}
+
+.atributo-item input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Estilos para os campos de texto de classe, raça e origem */
+.atributo-item input[type="text"] {
+    width: 100%;
+    overflow: visible;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 5px;
+    box-sizing: border-box;
+    min-width: 120px;
+}
+
+.pericia-item {
+    margin-bottom: 16px;
+    color: #ffffff;
+}
+
+.pericia-principal {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.pericia-principal.expanded {
+    color: #007AFF;
+}
+
+.pericia-principal::before {
+    content: '▶';
+    display: inline-block;
+    margin-right: 5px;
+    transition: transform 0.3s ease;
+    font-size: 0.8em;
+}
+
+.pericia-principal.expanded::before {
+    transform: rotate(90deg);
+}
+
+.sub-pericias {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    margin-left: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    opacity: 0;
+    max-height: 0;
+}
+
+.sub-pericias.visible {
+    opacity: 1;
+    max-height: 1000px;
+}
+
+/* Estilos para o navbar */
+.navbar,
+.navbar-bg {
+    background: linear-gradient(135deg, #8B4513, #D2691E, #E67E22) fixed;
+    backdrop-filter: blur(10px);
+}
+
+.navbar .navbar-inner .left .link {
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.navbar .navbar-inner .title {
+    color: white;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    font-size: 18px;
+}
+
+.page-content {
+    background: transparent;
+}
+
+/* Responsividade */
+@media screen and (max-width: 480px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+
+    .vida-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .mana-circulo {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Estilos para alinhar atributos de sorte para cima */
+.grid-box:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.grid-box:nth-child(2) .atributos-lista {
+    margin-top: 0;
+}
+
+/* Ajuste para o grid de informações do personagem */
+.grid-box .atributos-lista {
+    width: 100%;
+    padding: 10px;
+}
+
+/* Garantir que o texto não fique cortado */
+#raca,
+#classe,
+#origem {
+    width: 100%;
+    overflow: visible;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 5px;
+    box-sizing: border-box;
+    min-width: 120px;
+}
+
+/* Estilos para os campos de informação do personagem */
+.info-personagem .atributo-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.info-personagem .atributo-item span {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.campo-info {
+    width: 100%;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ff9933;
+    background-color: #2b1a00;
+    color: #ffffff;
+    font-size: 16px;
+    box-sizing: border-box;
+    overflow: visible;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 150px;
+}
+
+/* Estilos para os contadores de atributos */
+.atributos-contador {
+    font-size: 0.8em;
+    background-color: #ff6b00;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: 10px;
+    font-weight: normal;
+}
+
+.atributos-contador.limite-excedido {
+    background-color: #ff3333;
+    animation: pulsar 1s infinite;
+}
+
+@keyframes pulsar {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.sub-pericia-valores {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.sub-pericia-bonus {
+    display: flex;
+    gap: 8px;
+    font-size: 0.8em;
+}
+
+.bonus-raca,
+.bonus-classe,
+.bonus-origem {
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.bonus-raca {
+    background-color: #ff6b00;
+}
+
+.bonus-classe {
+    background-color: #4a90e2;
+}
+
+.bonus-origem {
+    background-color: #50c878;
+}
+
+.btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #4a90e2;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #357abd;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background-color: #138496;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
