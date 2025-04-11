@@ -1,0 +1,31 @@
+{
+  "cwd": "C:\\sistema\\sistema",
+  "type": [
+    "cordova"
+  ],
+  "name": "Sistema dos Deuses",
+  "pkg": "br.com.SistemaDosDeuses",
+  "framework": "core",
+  "template": "split-view",
+  "bundler": "vite",
+  "cssPreProcessor": "less",
+  "cordova": {
+    "folder": "cordova",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "plugins": [
+      "cordova-plugin-statusbar",
+      "cordova-plugin-keyboard",
+      "cordova-plugin-splashscreen"
+    ]
+  },
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkMode": false,
+    "iconFonts": true
+  },
+  "customBuild": false
+}
