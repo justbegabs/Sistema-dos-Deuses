@@ -1,80 +1,124 @@
-const express = require('express');
-const cors = require('cors');
+const http = require('http');
+const url = require('url');
+const fs = require('fs');
 const path = require('path');
-const app = express();
-
-// Middleware para permitir CORS e parsing de JSON
-app.use(cors());
-app.use(express.json());
-
-// Servir arquivos estáticos da pasta www
-app.use(express.static(path.join(__dirname, 'www')));
 
 // Armazenamento em memória (pode ser substituído por um banco de dados)
 let personagens = [];
 
-// Definir rotas da API diretamente no app
+// Função para enviar resposta JSON
+function sendJSON(res, data, statusCode = 200) {
+  res.writeHead(statusCode, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
+  res.end(JSON.stringify(data));
+}
 
-// GET - Obter todos os personagens
-app.get('/api/personagens', (req, res) => {
-  res.json(personagens);
-});
+// Função para ler o corpo da requisição
+function readRequestBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', chunk => {
+      body += chunk.toString();
+    });
+    req.on('end', () => {
+      try {
+        resolve(body ? JSON.parse(body) : {});
+      } catch (error) {
+        reject(error);
+      }
+    });
+    req.on('error', reject);
+  });
+}
 
-// GET - Obter personagem específico
-app.get('/api/personagens/:id', (req, res) => {
-  const id = req.params.id;
-  const personagem = personagens.find(p => p.id === id);
-
-  if (personagem) {
-    res.json(personagem);
-  } else {
-    res.status(404).json({ message: 'Personagem não encontrado' });
+// Criar servidor HTTP
+const server = http.createServer(async (req, res) => {
+  // Configurar CORS para todas as respostas
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  // Responder imediatamente às requisições OPTIONS (preflight CORS)
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
   }
-});
 
-// POST - Criar novo personagem
-app.post('/api/personagens', (req, res) => {
-  const novoPersonagem = req.body;
-  // Adicionar ID único ao personagem
-  novoPersonagem.id = Date.now().toString();
-  personagens.push(novoPersonagem);
-  res.status(201).json(novoPersonagem);
-});
+  // Analisar a URL da requisição
+  const parsedUrl = url.parse(req.url, true);
+  const pathname = parsedUrl.pathname;
 
-// PUT - Atualizar personagem
-app.put('/api/personagens/:id', (req, res) => {
-  const id = req.params.id;
-  const personagemAtualizado = req.body;
+  // Rotas da API
+  try {
+    // GET - Obter todos os personagens
+    if (pathname === '/api/personagens' && req.method === 'GET') {
+      sendJSON(res, personagens);
+      return;
+    }
 
-  const index = personagens.findIndex(p => p.id === id);
-  if (index !== -1) {
-    personagens[index] = personagemAtualizado;
-    res.json(personagemAtualizado);
-  } else {
-    res.status(404).json({ message: 'Personagem não encontrado' });
+    // GET - Obter personagem específico
+    if (pathname.match(/^\/api\/personagens\/[\w-]+$/) && req.method === 'GET') {
+      const id = pathname.split('/')[3];
+      const personagem = personagens.find(p => p.id === id);
+
+      if (personagem) {
+        sendJSON(res, personagem);
+      } else {
+        sendJSON(res, { message: 'Personagem não encontrado' }, 404);
+      }
+      return;
+    }
+
+    // POST - Criar novo personagem
+    if (pathname === '/api/personagens' && req.method === 'POST') {
+      const novoPersonagem = await readRequestBody(req);
+      novoPersonagem.id = Date.now().toString();
+      personagens.push(novoPersonagem);
+      sendJSON(res, novoPersonagem, 201);
+      return;
+    }
+
+    // PUT - Atualizar personagem
+    if (pathname.match(/^\/api\/personagens\/[\w-]+$/) && req.method === 'PUT') {
+      const id = pathname.split('/')[3];
+      const personagemAtualizado = await readRequestBody(req);
+
+      const index = personagens.findIndex(p => p.id === id);
+      if (index !== -1) {
+        personagemAtualizado.id = id; // Garantir que o ID não seja alterado
+        personagens[index] = personagemAtualizado;
+        sendJSON(res, personagemAtualizado);
+      } else {
+        sendJSON(res, { message: 'Personagem não encontrado' }, 404);
+      }
+      return;
+    }
+
+    // DELETE - Remover personagem
+    if (pathname.match(/^\/api\/personagens\/[\w-]+$/) && req.method === 'DELETE') {
+      const id = pathname.split('/')[3];
+
+      const index = personagens.findIndex(p => p.id === id);
+      if (index !== -1) {
+        personagens.splice(index, 1);
+        res.writeHead(204);
+        res.end();
+      } else {
+        sendJSON(res, { message: 'Personagem não encontrado' }, 404);
+      }
+      return;
+    }
+
+    // Rota não encontrada
+    sendJSON(res, { message: 'Rota não encontrada' }, 404);
+  } catch (error) {
+    console.error('Erro no servidor:', error);
+    sendJSON(res, { message: 'Erro interno do servidor' }, 500);
   }
-});
-
-// DELETE - Remover personagem
-app.delete('/api/personagens/:id', (req, res) => {
-  const id = req.params.id;
-
-  const index = personagens.findIndex(p => p.id === id);
-  if (index !== -1) {
-    personagens.splice(index, 1);
-    res.status(204).send();
-  } else {
-    res.status(404).json({ message: 'Personagem não encontrado' });
-  }
-});
-
-// Rota para todas as outras requisições - retorna index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'www', 'index.html'));
 });
 
 // Iniciar servidor
 const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Servidor API rodando na porta ${PORT}`);
 });
