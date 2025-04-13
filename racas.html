@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teste de Ícones e Menu Framework7</title>
+
+  <!-- Framework7 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.css">
+  <link rel="stylesheet" href="css/index.css" />
+
+  <!-- Ícones do Framework7 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons/css/framework7-icons.min.css">
+
+</head>
+
+<body class="pag-2">
+  <div id="app">
+    <!-- Painel Lateral -->
+    <div class="panel panel-left panel-cover">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="title">Menu</div>
+              <div class="right">
+                <a href="#" class="panel-close">Fechar</a>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <!-- Searchbar -->
+            <div class="searchbar-container">
+              <form class="searchbar">
+                <div class="searchbar-inner">
+                  <div class="searchbar-input-wrap">
+                    <input type="search" placeholder="Buscar...">
+                    <i class="searchbar-icon"></i>
+                    <span class="input-clear-button"></span>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- Lista de Itens -->
+            <div class="list">
+              <ul id="race-list">
+                <li><a href="#" class="link-box3" data-url="/www/alien.html">Alien</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/anão.html">Anão</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/anjo.html">Anjo</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/anjo-caído.html">Anjo Caído</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/banshee.html">Banshee</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/bruxa.html">Bruxa</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/ciborgue.html">Ciborgue</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/demônio.html">Demônio</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/elfo.html">Elfo</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/esqueleto.html">Esqueleto</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/fae.html">Fae</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/fauno.html">Fauno/Sátiro</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/humano.html">Humano</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/kanima.html">Kanima</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/kitsune.html">Kitsune</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/lobisomem.html">Lobisomem</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/metamorfo.html">Metamorfo</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/neko.html">Neko</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/nogitsune.html">Nogitsune</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/semideus.html">Semideus</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/sereia.html">Sereia/Tritão</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/siren.html">Siren</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/súcubo.html">Súcubo</a></li>
+                <li><a href="#" class="link-box3" data-url="/www/vampiro.html">Vampiro</a></li>
+              </ul>
+            </div>
+
+            <!-- Caso não encontre nada -->
+            <div class="block searchbar-not-found">
+              <p>Nenhum resultado encontrado.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="view view-main">
+      <div class="page" data-name="home">
+        <div class="navbar">
+          <div class="navbar-inner">
+            <div class="left">
+              <a href="#" onclick="voltarParaIndex()" class="link">
+                <i class="f7-icons">arrow_left</i>
+              </a>
+            </div>
+            <div class="title">Meu App</div>
+            <div class="right">
+              <a href="#" class="link panel-open" data-panel=".panel-left">
+                <i class="f7-icons">menu</i>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+          <h1 id="raças">Raças</h1>
+          <h3>
+            Todas as raças foram criadas há muito, muito tempo, mas não foram todas ao mesmo tempo.<br>
+            Algumas foram criadas antes, e isso criou sentimentos de orgulho e de vaidade em relação às outras.<br><br>
+            Com o tempo o que eram apenas sentimentos foram se tornando ações. Ações de violência, que logo se
+            escalonaram para guerras entre as raças, que foram criadas para viver harmoniosamente.<br><br>
+            Algumas raças eram tão vaidosas que se achavam até no direito de criar outras em suas imagens, mas com
+            modificações, o que não deixou os Deuses felizes.
+          </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Framework7 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/framework7@latest/framework7-bundle.min.js"></script>
+
+  <script>
+    var app = new Framework7({
+      el: '#app',
+      name: 'Meu App',
+      theme: 'auto',
+      panel: {
+        swipe: true,
+      },
+    });
+
+    // Função para voltar à página inicial
+    function voltarParaIndex() {
+      window.location.href = "/www/index.html";
+    }
+
+    // Inicializar a searchbar
+    var searchbar = app.searchbar.create({
+      el: '.searchbar',
+      searchContainer: '.list',
+      searchIn: '.link-box3',
+      on: {
+        search: function (sb, query) {
+          if (query) {
+            let hasVisibleItems = false;
+            // Esconde todos os itens
+            document.querySelectorAll('#race-list li').forEach(function (item) {
+              if (item.textContent.toLowerCase().includes(query.toLowerCase())) {
+                item.style.display = '';
+                hasVisibleItems = true;
+              } else {
+                item.style.display = 'none';
+              }
+            });
+
+            // Mostra/esconde a mensagem de "não encontrado"
+            const notFound = document.querySelector('.searchbar-not-found');
+            notFound.style.display = hasVisibleItems ? 'none' : 'block';
+          } else {
+            // Mostra todos os itens quando a busca está vazia
+            document.querySelectorAll('#race-list li').forEach(function (item) {
+              item.style.display = '';
+            });
+            // Esconde a mensagem de "não encontrado"
+            document.querySelector('.searchbar-not-found').style.display = 'none';
+          }
+        }
+      },
+      removeDiacritics: true
+    });
+
+    // Adicionar evento de clique para os links das raças
+    Dom7('#race-list a').on('click', function (e) {
+      e.preventDefault();
+      const url = Dom7(this).attr('data-url');
+      if (url) {
+        window.location.href = url;
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -2,125 +2,117 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Status do Personagem</title>
   <style>
-    .barra { width: 100%; height: 20px; background: #ccc; margin: 5px 0; border-radius: 5px; }
-    .barra-progresso { height: 100%; border-radius: 5px; transition: width 0.3s; }
-    .barra-vida { background: red; }
-    .barra-sanidade { background: blue; }
-    .barra-mana { background: purple; }
-    .barra-alma { background: black; }
-    .status { font-family: sans-serif; max-width: 300px; margin: auto; }
+    body {
+      font-family: Arial, sans-serif;
+      color: #fff;
+      background-color: #222;
+      margin: 0;
+      padding: 20px;
+    }
+    .status-box {
+      background-color: #333;
+      border-radius: 8px;
+      padding: 15px;
+      max-width: 300px;
+    }
+    .linha {
+      margin-bottom: 10px;
+    }
+    .valor {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .input-container {
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #444;
+      background-color: #333;
+      color: #fff;
+      margin-right: 10px;
+    }
+    button {
+      padding: 8px 16px;
+      border-radius: 4px;
+      border: none;
+      background-color: #444;
+      color: #fff;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #555;
+    }
   </style>
+  <script src="js/api-service.js"></script>
 </head>
 <body>
-  <div class="status">
-    <div>Vida: <span id="vida">0/0</span></div>
-    <div class="barra"><div class="barra-progresso barra-vida" id="barra-vida"></div></div>
+  <div class="input-container">
+    <input type="text" id="fichaId" placeholder="Digite o ID da ficha">
+    <button onclick="carregarFicha()">Carregar</button>
+  </div>
 
-    <div>Sanidade: <span id="sanidade">0/0</span></div>
-    <div class="barra"><div class="barra-progresso barra-sanidade" id="barra-sanidade"></div></div>
-
-    <div>Mana: <span id="mana">0/0</span></div>
-    <div class="barra"><div class="barra-progresso barra-mana" id="barra-mana"></div></div>
-
-    <div>Alma: <span id="alma">0/0</span></div>
-    <div class="barra"><div class="barra-progresso barra-alma" id="barra-alma"></div></div>
+  <div class="status-box">
+    <div class="linha">Nome: <span id="nome" class="valor">-</span></div>
+    <div class="linha">Vida: <span id="vida" class="valor">0/0</span></div>
+    <div class="linha">Sanidade: <span id="sanidade" class="valor">0/0</span></div>
+    <div class="linha">Mana: <span id="mana" class="valor">0/0</span></div>
   </div>
 
   <script>
-    let obsWebSocket = null;
-    let obsConnected = false;
-    let obsSourceName = 'Status RPG';
+    function carregarFicha() {
+      const fichaId = document.getElementById('fichaId').value;
 
-    function atualizarStatus() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const fichaId = urlParams.get('id');
-      if (!fichaId) return;
-
-      const personagens = JSON.parse(localStorage.getItem('personagens') || '[]');
-      const ficha = personagens[fichaId];
-      if (!ficha) return;
-
-      const vidaAtual = parseInt(ficha.vida?.atual) || 0;
-      const vidaMax = parseInt(ficha.vida?.max) || 1;
-      const sanidadeAtual = parseInt(ficha.sanidade?.atual) || 0;
-      const sanidadeMax = parseInt(ficha.sanidade?.max) || 1;
-      const manaAtual = parseInt(ficha.mana?.atual) || 0;
-      const manaMax = parseInt(ficha.mana?.max) || 1;
-      const almaAtual = parseInt(ficha.alma?.atual) || 0;
-      const almaMax = parseInt(ficha.alma?.max) || 1;
-
-      document.getElementById('vida').textContent = `${vidaAtual}/${vidaMax}`;
-      document.getElementById('sanidade').textContent = `${sanidadeAtual}/${sanidadeMax}`;
-      document.getElementById('mana').textContent = `${manaAtual}/${manaMax}`;
-      document.getElementById('alma').textContent = `${almaAtual}/${almaMax}`;
-
-      const pct = (a, m) => Math.min(100, Math.max(0, (a / m) * 100));
-      document.getElementById('barra-vida').style.width = pct(vidaAtual, vidaMax) + '%';
-      document.getElementById('barra-sanidade').style.width = pct(sanidadeAtual, sanidadeMax) + '%';
-      document.getElementById('barra-mana').style.width = pct(manaAtual, manaMax) + '%';
-      document.getElementById('barra-alma').style.width = pct(almaAtual, almaMax) + '%';
-
-      if (obsConnected) {
-        const texto = `Vida: ${vidaAtual}/${vidaMax}\nSanidade: ${sanidadeAtual}/${sanidadeMax}\nMana: ${manaAtual}/${manaMax}\nAlma: ${almaAtual}/${almaMax}`;
-        obsWebSocket.send(JSON.stringify({
-          op: 6,
-          d: {
-            requestType: 'SetInputSettings',
-            requestId: 'atualizaStatus',
-            inputName: obsSourceName,
-            inputSettings: {
-              text: texto
-            }
-          }
-        }));
+      if (!fichaId) {
+        document.body.innerHTML = '<p style="color:white">ID da ficha não fornecido.</p>';
+        return;
       }
+
+      carregarPersonagens(fichaId);
     }
 
-    // Atualiza a cada segundo
-    setInterval(atualizarStatus, 1000);
-    atualizarStatus();
+    // Importa o serviço de API - Usando ApiService com A maiúsculo conforme definido em api-service.js
+    const ApiService = window.ApiService;
 
-    // (Opcional) conectar ao OBS WebSocket 5.x
-    function conectarOBS() {
+    async function carregarPersonagens(fichaId) {
       try {
-        obsWebSocket = new WebSocket('ws://localhost:4455');
-        obsWebSocket.onopen = () => {
-          console.log('Conectado ao OBS');
-          obsWebSocket.send(JSON.stringify({
-            op: 1,
-            d: {
-              rpcVersion: 1,
-              eventSubscriptions: 33
-              // se tiver senha: authentication: "SENHA_AQUI"
-            }
-          }));
-        };
+        // Busca diretamente o personagem pelo ID usando a API
+        const ficha = await ApiService.getPersonagem(fichaId);
+        
+        if (!ficha) {
+          document.getElementById('nome').textContent = '-';
+          document.getElementById('vida').textContent = '0/0';
+          document.getElementById('sanidade').textContent = '0/0';
+          document.getElementById('mana').textContent = '0/0';
+          alert('Ficha não encontrada. Verifique o ID informado.');
+          return;
+        }
+      } catch (err) {
+        console.error('Erro ao buscar ficha:', err);
+        alert(`Erro ao buscar ficha: ${err.message || 'Verifique sua conexão com o servidor'}`);
+        return;
 
-        obsWebSocket.onmessage = e => {
-          const data = JSON.parse(e.data);
-          if (data.op === 2) {
-            console.log('Autenticado com OBS');
-            obsConnected = true;
-          }
-        };
-
-        obsWebSocket.onclose = () => {
-          console.warn('WebSocket OBS desconectado');
-          obsConnected = false;
-        };
-
-        obsWebSocket.onerror = err => {
-          console.error('Erro OBS WebSocket:', err);
-        };
-      } catch (e) {
-        console.error('Erro ao tentar conectar com OBS:', e);
+        document.getElementById('nome').textContent = ficha.nome || '-';
+        document.getElementById('vida').textContent = `${ficha.vida}/${ficha.vidaMaxima}`;
+        document.getElementById('sanidade').textContent = `${ficha.sanidade}/${ficha.sanidadeMaxima}`;
+        document.getElementById('mana').textContent = `${ficha.mana}/${ficha.manaMaxima}`;
       }
     }
+      
 
-    // opcional: iniciar conexão automática
-    // conectarOBS();
+    // Carregar ficha automaticamente se ID estiver na URL
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const urlFichaId = params.get('id');
+      if (urlFichaId) {
+        document.getElementById('fichaId').value = urlFichaId;
+        carregarFicha();
+      }
+    });
   </script>
 </body>
 </html>

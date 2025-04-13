@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste da API de Personagens</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        button {
+            padding: 8px 12px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        #mensagem {
+            color: green;
+            margin: 10px 0;
+        }
+        .erro {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Teste da API de Personagens</h1>
+    
+    <div>
+        <h2>Criar Novo Personagem</h2>
+        <form id="formPersonagem">
+            <div>
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" required>
+            </div>
+            <div>
+                <label for="classe">Classe:</label>
+                <input type="text" id="classe" required>
+            </div>
+            <div>
+                <label for="raca">Raça:</label>
+                <input type="text" id="raca" required>
+            </div>
+            <div>
+                <label for="descricao">Descrição:</label>
+                <textarea id="descricao" rows="3"></textarea>
+            </div>
+            <button type="submit">Salvar Personagem</button>
+        </form>
+    </div>
+
+    <div id="mensagem"></div>
+
+    <h2>Lista de Personagens</h2>
+    <button id="btnAtualizar">Atualizar Lista</button>
+    <div id="listaPersonagens"></div>
+
+    <script src="js/api-service.js"></script>
+    <script>
+        // Função para exibir mensagem
+        function exibirMensagem(texto, erro = false) {
+            const mensagemEl = document.getElementById('mensagem');
+            mensagemEl.textContent = texto;
+            mensagemEl.className = erro ? 'erro' : '';
+        }
+
+        // Função para carregar personagens
+        async function carregarPersonagens() {
+            try {
+                const personagens = await ApiService.getPersonagens();
+                const listaEl = document.getElementById('listaPersonagens');
+                listaEl.innerHTML = '';
+
+                if (personagens.length === 0) {
+                    listaEl.innerHTML = '<p>Nenhum personagem cadastrado.</p>';
+                    return;
+                }
+
+                personagens.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <h3>${p.nome}</h3>
+                        <p>Classe: ${p.classe} | Raça: ${p.raca}</p>
+                        <p>${p.descricao || 'Sem descrição'}</p>
+                        <button class="btnExcluir" data-id="${p.id}">Excluir</button>
+                    `;
+                    listaEl.appendChild(card);
+                });
+
+                // Adicionar eventos aos botões de excluir
+                document.querySelectorAll('.btnExcluir').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        const id = e.target.getAttribute('data-id');
+                        if (confirm('Tem certeza que deseja excluir este personagem?')) {
+                            try {
+                                await ApiService.excluirPersonagem(id);
+                                exibirMensagem('Personagem excluído com sucesso!');
+                                carregarPersonagens();
+                            } catch (error) {
+                                exibirMensagem(`Erro ao excluir: ${error.message}`, true);
+                            }
+                        }
+                    });
+                });
+            } catch (error) {
+                exibirMensagem(`Erro ao carregar personagens: ${error.message}`, true);
+            }
+        }
+
+        // Evento para o formulário de criação
+        document.getElementById('formPersonagem').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const personagem = {
+                nome: document.getElementById('nome').value,
+                classe: document.getElementById('classe').value,
+                raca: document.getElementById('raca').value,
+                descricao: document.getElementById('descricao').value
+            };
+
+            try {
+                await ApiService.criarPersonagem(personagem);
+                exibirMensagem('Personagem criado com sucesso!');
+                document.getElementById('formPersonagem').reset();
+                carregarPersonagens();
+            } catch (error) {
+                exibirMensagem(`Erro ao criar personagem: ${error.message}`, true);
+            }
+        });
+
+        // Evento para o botão de atualizar lista
+        document.getElementById('btnAtualizar').addEventListener('click', () => {
+            carregarPersonagens();
+        });
+
+        // Carregar personagens ao iniciar
+        window.addEventListener('DOMContentLoaded', () => {
+            carregarPersonagens();
+        });
+    </script>
+</body>
+</html>
