@@ -1,0 +1,59 @@
+:root {
+    /* Cores de Fundo */
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2a2a2a;
+    --bg-tertiary: #333333;
+    --bg-input: #242424;
+    --bg-hover: #3a3a3a;
+    --bg-active: #404040;
+
+    /* Cores de Texto */
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --text-disabled: #666666;
+
+    /* Cores de Borda */
+    --border-color: #404040;
+
+    /* Cores de Destaque */
+    --accent-color: #7c4dff;
+    --accent-hover: #9670ff;
+    --error-color: #ff4d4d;
+    --success-color: #4dff4d;
+    --warning-color: #ffd700;
+
+    /* Cores das Barras de Status */
+    --vida-color: #ff4d4d;
+    --sanidade-color: #4d4dff;
+    --mana-color: #4dffff;
+    --alma-color: #ffff4d;
+
+    /* Sombras */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.4);
+
+    /* Espaçamento */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+
+    /* Bordas */
+    --border-radius-sm: 0.25rem;
+    --border-radius-md: 0.5rem;
+    --border-radius-lg: 1rem;
+
+    /* Fontes */
+    --font-family: 'Roboto', sans-serif;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 1.5rem;
+
+    /* Transições */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}

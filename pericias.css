@@ -1,0 +1,213 @@
+/* Estilos para Perícias */
+.pericias-container {
+    padding: 1rem;
+}
+
+.pericia-principal {
+    background-color: var(--bg-secondary);
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.pericia-principal:hover {
+    background-color: var(--bg-hover);
+}
+
+.pericia-principal.expandida {
+    background-color: var(--bg-active);
+}
+
+.sub-pericias {
+    display: none;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.sub-pericias.mostrar {
+    display: block;
+}
+
+.sub-pericia {
+    background-color: var(--bg-tertiary);
+    padding: 0.5rem;
+    margin: 0.25rem 0;
+    border-radius: 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.pericia-nome {
+    flex: 1;
+    font-weight: 500;
+}
+
+.pericia-bonus {
+    width: 60px;
+    text-align: center;
+    padding: 0.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    background-color: var(--bg-input);
+}
+
+.pericia-rolar {
+    padding: 0.25rem 0.5rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.pericia-rolar:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Estilos para Atributos */
+.atributos-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.atributo-grupo {
+    background-color: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.atributo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.atributo-titulo {
+    font-weight: bold;
+    color: var(--text-primary);
+}
+
+#total-testes,
+#total-sorte {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+#total-testes.excedido,
+#total-sorte.excedido {
+    color: var(--error-color);
+}
+
+.atributo-input {
+    width: 60px;
+    text-align: center;
+    padding: 0.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    background-color: var(--bg-input);
+}
+
+/* Estilos para Barras de Status */
+.status-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.status-grupo {
+    background-color: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.status-valores {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.status-input {
+    width: 60px;
+    text-align: center;
+    padding: 0.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+    background-color: var(--bg-input);
+}
+
+.barra-progresso {
+    width: 100%;
+    height: 20px;
+    background-color: var(--bg-tertiary);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.vida-barra {
+    height: 100%;
+    background-color: var(--vida-color);
+    transition: width 0.3s ease;
+}
+
+.sanidade-barra {
+    height: 100%;
+    background-color: var(--sanidade-color);
+    transition: width 0.3s ease;
+}
+
+.mana-barra {
+    height: 100%;
+    background-color: var(--mana-color);
+    transition: width 0.3s ease;
+}
+
+.alma-barra {
+    height: 100%;
+    background-color: var(--alma-color);
+    transition: width 0.3s ease;
+}
+
+/* Estilos para Rolagem de Dados */
+.rolagem-resultado {
+    background-color: var(--bg-secondary);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+
+.rolagem-resultado p {
+    margin: 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+
+    .atributos-container,
+    .status-container {
+        grid-template-columns: 1fr;
+    }
+
+    .sub-pericias {
+        padding-left: 0.5rem;
+    }
+}

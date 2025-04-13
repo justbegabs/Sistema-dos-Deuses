@@ -1,11 +1,270 @@
-/* Estilos gerais */
-body {
-    background: linear-gradient(135deg, #8B4513, #D2691E, #E67E22) fixed;
-    min-height: 100vh;
+@import url('base.css');
+@import url('variables.css');
+
+/* Variáveis CSS */
+:root {
+    --primary-color: #8B4513;
+    --secondary-color: #D2691E;
+    --success-color: #E67E22;
+    --danger-color: #c0392b;
+    --warning-color: #f39c12;
+    --info-color: #D2691E;
+    --background-color: rgba(200, 76, 5, 0.4);
+    --card-background: #ffffff;
+    --text-color: #333333;
+    --border-radius: 8px;
+    --shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --border-color: rgba(139, 69, 19, 0.2);
+}
+
+/* Reset e estilos base */
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+body {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--success-color)) fixed;
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--primary-color);
     color: white;
-    font-family: Arial, sans-serif;
+    padding: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.navbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Botões */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    justify-content: center;
+}
+
+.btn-primary {
+    background-color: #2196f3;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+/* Layout Principal */
+.page-content {
+    padding-top: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+/* Cards e Seções */
+.section.card {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 2rem;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.section-content {
+    padding: 1.5rem;
+}
+
+.section-title {
+    margin: 0 0 1.5rem 0;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+/* Status e Barras de Progresso */
+.barra-vida {
+    background-color: #E74C3C;
+}
+
+.barra-sanidade {
+    background-color: #9B59B6;
+}
+
+.barra-mana {
+    background-color: #3498DB;
+}
+
+.barra-alma {
+    background-color: #F1C40F;
+}
+
+/* Formulários */
+.form-control {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.75rem;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.2);
+    outline: none;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .navbar-inner {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .right {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .status-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-row {
+        grid-template-columns: 1fr;
+    }
+
+    .btn span {
+        display: none;
+    }
+
+    .btn {
+        padding: 8px;
+    }
+
+    .btn i {
+        margin: 0;
+    }
+}
+
+/* Ícones */
+.icon {
+    font-size: 1.2rem;
+    color: white;
+}
+
+/* Grid e containers */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.grid-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.grid-box:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+/* Formulários e inputs */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--cor-texto);
+    font-size: 0.9rem;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--cor-texto);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Barras de progresso */
+.barra-progresso {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0.5rem 0;
+}
+
+.barra-vida {
+    background-color: #E74C3C;
+}
+
+.barra-sanidade {
+    background-color: #9B59B6;
+}
+
+.barra-mana {
+    background-color: #3498DB;
+}
+
+.barra-alma {
+    background-color: #F1C40F;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .navbar-inner {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Grid de informações */
@@ -90,33 +349,39 @@ body {
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* Nível */
+/* Barra de Nível */
 .nivel-container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #ffffff;
-    margin-bottom: 8px;
-}
-
-.nivel-input-container {
-    display: flex;
-    align-items: center;
-    gap: 4px;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .nivel-barra {
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
+    width: 100%;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
     overflow: hidden;
+    position: relative;
 }
 
 .nivel-progresso {
     height: 100%;
-    background: linear-gradient(90deg, #4a9eff, #8cc5ff);
+    background-color: #4CAF50;
     width: 0%;
     transition: width 0.3s ease;
+}
+
+/* Ajuste do input de nível */
+.nivel-input {
+    width: 80px;
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    margin-bottom: 10px;
 }
 
 /* Atributos vitais */
@@ -222,7 +487,9 @@ body {
 }
 
 .nivel-progresso {
-    background: linear-gradient(90deg, #4a9eff, #8cc5ff);
+    height: 100%;
+    background-color: #4CAF50;
+    transition: width 0.3s ease-in-out;
 }
 
 /* Cores específicas para cada barra */
@@ -276,7 +543,17 @@ body {
 
 /* Botão flutuante */
 .fab a {
-    background: linear-gradient(135deg, #4a9eff 0%, #8cc5ff 100%);
+    background: linear-gradient(135deg, #000000 0%, #333333 100%) !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+}
+
+.fab a:hover {
+    background: linear-gradient(135deg, #333333 0%, #444444 100%) !important;
+}
+
+.fab a:active {
+    background: linear-gradient(135deg, #444444 0%, #555555 100%) !important;
 }
 
 /* Swipeout */
@@ -493,18 +770,16 @@ body {
 }
 
 .campo-info {
-    width: 100%;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ff9933;
-    background-color: #2b1a00;
-    color: #ffffff;
-    font-size: 16px;
-    box-sizing: border-box;
-    overflow: visible;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 150px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.8rem;
+    margin: 0.5rem 0;
+    transition: all 0.3s ease;
+}
+
+.campo-info:hover {
+    background: rgba(255, 255, 255, 0.08);
 }
 
 /* Estilos para os contadores de atributos */
@@ -518,7 +793,7 @@ body {
     font-weight: normal;
 }
 
-.atributos-contador.limite-excedido {
+.atributos-contador.excedido {
     background-color: #ff3333;
     animation: pulsar 1s infinite;
 }
@@ -618,4 +893,1169 @@ body {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+}
+
+.raca-dialog .dialog-inner,
+.origem-dialog .dialog-inner,
+.classe-dialog .dialog-inner {
+    padding: 16px;
+}
+
+/* Estilo para o cursor nos elementos .dice-roll */
+.dice-roll {
+    cursor: pointer;
+}
+
+/* Estilos para as perícias */
+.sub-pericias {
+    display: none;
+    padding: 5px 0;
+    margin-left: -10px;
+    background-color: transparent;
+    border-radius: 0 0 5px 5px;
+    border: 1px solid #ff8533;
+    border-top: none;
+    width: 100%;
+    min-width: 500px;
+}
+
+.pericia-principal {
+    background-color: #ff8533;
+    color: white;
+    padding: 8px 15px 8px 30px;
+    cursor: pointer;
+    position: relative;
+    margin-bottom: 0;
+    user-select: none;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.pericia-principal:hover {
+    background-color: rgba(255, 133, 51, 0.1);
+}
+
+.pericia-principal.active+.sub-pericias {
+    display: block !important;
+}
+
+.sub-pericia-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    margin: 3px 10px;
+    background-color: #fff2e6;
+    border-radius: 3px;
+    border: 1px solid #ff8533;
+    transition: background-color 0.2s;
+    width: calc(100% - 20px);
+    min-width: 480px;
+}
+
+.sub-pericia-item:hover {
+    background-color: #ffd9b3;
+}
+
+.sub-pericia-nome {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #666;
+    white-space: nowrap;
+    min-width: 0;
+    flex: 1;
+}
+
+.dice-icon {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    transition: transform 0.2s, filter 0.2s;
+    filter: brightness(1);
+    margin-left: 8px;
+    opacity: 0.7;
+}
+
+.dice-icon:hover {
+    transform: scale(1.1);
+    filter: brightness(1.5);
+    opacity: 1;
+}
+
+.sub-pericia-valores {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    justify-content: flex-end;
+    flex: 1;
+    min-width: 300px;
+}
+
+.sub-pericia-valor {
+    width: 45px;
+    padding: 3px;
+    border: 1px solid #ff8533;
+    border-radius: 3px;
+    text-align: center;
+    background-color: #ffffff;
+    color: #000000 !important;
+    font-size: 0.9em;
+    font-weight: bold;
+    -webkit-text-fill-color: #000000;
+}
+
+.sub-pericia-valor:focus {
+    outline: none;
+    border-color: #ff9d5c;
+    box-shadow: 0 0 0 2px rgba(255, 133, 51, 0.2);
+    background-color: #ffffff;
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000;
+}
+
+.sub-pericia-valor::placeholder {
+    color: #000000;
+    -webkit-text-fill-color: #000000;
+}
+
+.sub-pericia-bonus {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    flex: 0 0 auto;
+    min-width: 180px;
+}
+
+.bonus-raca,
+.bonus-classe,
+.bonus-origem {
+    font-size: 0.85em;
+    color: #000000;
+    padding: 2px 8px;
+    background-color: #fff9f5;
+    border-radius: 3px;
+    border: 1px solid #ff8533;
+    min-width: 45px;
+    text-align: center;
+}
+
+.raca-list,
+.origem-list,
+.classe-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+    padding: 16px;
+    background-color: #2b1a00;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.raca-item,
+.origem-item,
+.classe-item {
+    background-color: #ff8533;
+    color: #fff;
+    padding: 12px;
+    border-radius: 4px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.raca-item:hover,
+.origem-item:hover,
+.classe-item:hover {
+    background-color: #ff9d5c;
+}
+
+.raca-item:active,
+.origem-item:active,
+.classe-item:active {
+    background-color: #e67422;
+}
+
+/* Removendo estilos específicos de origem e classe */
+.origem-list,
+.classe-list {
+    background-color: #2b1a00 !important;
+}
+
+.origem-item,
+.classe-item {
+    background-color: #ff8533 !important;
+}
+
+.origem-item:hover,
+.classe-item:hover {
+    background-color: #ff9d5c !important;
+}
+
+.origem-item:active,
+.classe-item:active {
+    background-color: #e67422 !important;
+}
+
+.raca-item:hover {
+    background-color: #ff9933;
+}
+
+.raca-item:active {
+    transform: scale(0.95);
+}
+
+.classe-list,
+.origem-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 8px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+.classe-item,
+.origem-item {
+    background-color: var(--f7-theme-color);
+    color: white;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.classe-item:hover,
+.origem-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.classe-item:active,
+.origem-item:active {
+    transform: scale(0.95);
+}
+
+.raca-dialog,
+.origem-dialog,
+.classe-dialog {
+    max-width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+.raca-list,
+.origem-list,
+.classe-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}
+
+.raca-item,
+.origem-item,
+.classe-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.raca-item:hover,
+.origem-item:hover,
+.classe-item:hover {
+    background-color: #f0f0f0;
+}
+
+#raca,
+#origem,
+#classe {
+    cursor: pointer;
+}
+
+.atributos-contadores {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
+    background-color: #2b1a00;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.contador-grupo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ff8533;
+}
+
+.contador-label {
+    font-size: 0.9em;
+    margin-bottom: 5px;
+}
+
+.contador-valor {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.contadores-atributos {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.pericias-lista {
+    padding: 10px;
+    min-width: 500px;
+    overflow-x: auto;
+}
+
+.pericia-item {
+    margin-bottom: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.pericia-principal::before {
+    content: '►';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%) rotate(0deg);
+    transition: transform 0.3s;
+}
+
+.pericia-principal.active {
+    border-radius: 5px 5px 0 0;
+    background-color: #e67422;
+}
+
+.pericia-principal.active::before {
+    transform: translateY(-50%) rotate(90deg);
+}
+
+.sub-pericias {
+    transition: all 0.3s ease;
+    max-height: 0;
+    overflow: hidden;
+}
+
+.pericia-principal.active+.sub-pericias {
+    max-height: 1000px;
+    padding: 10px;
+}
+
+/* Container de mensagens de rolagem */
+#mensagens-rolagem {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mensagem-rolagem {
+    background-color: #fff;
+    border: 1px solid #ff8533;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.mensagem-cabecalho {
+    background-color: #ff8533;
+    color: white;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px 4px 0 0;
+}
+
+.mensagem-titulo {
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
+.mensagem-fechar {
+    cursor: pointer;
+    font-size: 1.2em;
+    padding: 0 5px;
+}
+
+.mensagem-fechar:hover {
+    color: #ffccaa;
+}
+
+.mensagem-conteudo {
+    padding: 10px;
+    font-size: 0.9em;
+}
+
+.detalhe-rolagem {
+    display: flex;
+    justify-content: space-between;
+    margin: 5px 0;
+    padding: 3px 0;
+    border-bottom: 1px solid #ffe6cc;
+}
+
+.detalhe-rolagem:last-child {
+    border-bottom: none;
+}
+
+.detalhe-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.detalhe-valor {
+    font-weight: bold;
+    color: #ff8533;
+}
+
+.total-final {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 2px solid #ff8533;
+}
+
+.total-final .detalhe-label {
+    font-size: 1.1em;
+    color: #333;
+}
+
+.total-final .detalhe-valor {
+    font-size: 1.1em;
+    color: #ff6600;
+}
+
+[data-attribute="intelecto"]+.sub-pericias {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.barra-inferior {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #333333;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.barra-inferior .item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.barra-inferior .item i {
+    font-size: 1.8em;
+    margin-bottom: 5px;
+    color: #ffffff;
+}
+
+.barra-inferior .item.ativo {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+.barra-inferior .item.ativo i {
+    color: #ffd700;
+}
+
+.swal2-popup {
+    font-size: 0.9rem;
+    z-index: 99999 !important;
+}
+
+.swal2-container {
+    z-index: 99999 !important;
+}
+
+.swal2-backdrop-show {
+    z-index: 99998 !important;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Adicionando estilos para os grupos de status */
+.status-grupo {
+    margin-bottom: 1.5rem;
+}
+
+.status-valores {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.status-valores input {
+    width: 80px;
+    text-align: center;
+}
+
+.status-valores span {
+    color: var(--cor-texto);
+    font-weight: bold;
+}
+
+/* Melhorando o layout do grid */
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -0.5rem;
+    margin-left: -0.5rem;
+}
+
+.form-row>.form-group {
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    flex: 1;
+}
+
+.col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+
+/* Estilizando os atributos */
+.atributos-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.atributo-item {
+    background: rgba(200, 76, 5, 0.2);
+    border: 1px solid rgba(200, 76, 5, 0.4);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.atributo-item:hover {
+    background: rgba(200, 76, 5, 0.3);
+    transform: translateY(-2px);
+}
+
+.atributo-input {
+    width: 100%;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--cor-borda);
+    border-radius: 4px;
+    color: var(--cor-texto);
+    text-align: center;
+}
+
+/* Contador de atributos */
+.atributos-contador {
+    font-size: 0.8rem;
+    color: var(--cor-texto);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    margin-left: 0.5rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .form-row {
+        flex-direction: column;
+    }
+
+    .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .atributos-lista {
+        grid-template-columns: 1fr;
+    }
+
+    .status-valores input {
+        width: 100%;
+    }
+}
+
+/* Melhorando a aparência dos botões na navbar */
+.navbar .right {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.navbar .btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+}
+
+.navbar .icon {
+    font-size: 1.2rem;
+}
+
+/* Layout da Ficha */
+.ficha-container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    font-family: var(--font-family);
+}
+
+/* Cabeçalho da Ficha */
+.ficha-header {
+    grid-column: span 12;
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.ficha-title {
+    font-size: var(--font-size-2xl);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Seções da Ficha */
+.section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-content {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+/* Campos de Input */
+.input-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.status-label {
+    display: block;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--spacing-xs);
+}
+
+.status-input {
+    width: 100%;
+    padding: var(--spacing-sm);
+    border: 1px solid var(--bg-tertiary);
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-md);
+    transition: border-color var(--transition-fast);
+}
+
+.status-input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.nivel-input {
+    width: 60px;
+    text-align: center;
+}
+
+/* Barras de Status */
+.status-bar-container {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius-sm);
+    height: 20px;
+    margin-top: var(--spacing-xs);
+    overflow: hidden;
+}
+
+.status-bar {
+    height: 100%;
+    transition: width var(--transition-normal);
+}
+
+.status-bar.health {
+    background-color: var(--status-health);
+}
+
+.status-bar.sanity {
+    background-color: var(--status-sanity);
+}
+
+.status-bar.mana {
+    background-color: var(--status-mana);
+}
+
+.status-bar.soul {
+    background-color: var(--status-soul);
+}
+
+/* Perícias */
+.pericia-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.pericia-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.pericia-nome {
+    flex: 1;
+    color: var(--text-secondary);
+}
+
+/* Inventário */
+.inventario-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--spacing-md);
+}
+
+.item-card {
+    background-color: var(--bg-secondary);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    transition: transform var(--transition-fast);
+}
+
+.item-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Botões de Ação */
+.action-buttons {
+    grid-column: span 12;
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+}
+
+.btn-save {
+    background-color: var(--status-success);
+    color: white;
+}
+
+.btn-delete {
+    background-color: var(--status-error);
+    color: white;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .ficha-container {
+        grid-template-columns: repeat(6, 1fr);
+        padding: var(--spacing-md);
+    }
+
+    .card {
+        grid-column: span 6;
+    }
+}
+
+@media (max-width: 480px) {
+    .ficha-container {
+        grid-template-columns: 1fr;
+        padding: var(--spacing-sm);
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+/* Estilos para a ficha do personagem */
+
+/* Seletores de raça, classe e origem */
+.raca-list,
+.classe-list,
+.origem-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 10px;
+    padding: 15px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.raca-item,
+.classe-item,
+.origem-item {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.raca-item:hover,
+.classe-item:hover,
+.origem-item:hover {
+    background-color: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* Barras de status */
+.barra-status {
+    width: 100%;
+    height: 20px;
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    position: relative;
+}
+
+.barra-vida {
+    background-color: var(--status-danger);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.barra-sanidade {
+    background-color: var(--status-warning);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.barra-mana {
+    background-color: var(--status-info);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.barra-alma {
+    background-color: var(--status-success);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+/* Barra de nível */
+.barra-nivel {
+    width: 100%;
+    height: 10px;
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.barra-nivel-progresso {
+    background-color: var(--primary-color);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+/* Perícias */
+.pericia-principal {
+    padding: 10px;
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.pericia-principal:hover {
+    background-color: var(--bg-hover);
+}
+
+.pericia-principal.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.sub-pericias {
+    display: none;
+    padding-left: 20px;
+    margin-top: 5px;
+}
+
+.sub-pericias.visible {
+    display: block;
+}
+
+/* Atributos */
+.atributo-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.atributo-item input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+/* Status de combate */
+.status-combate {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.status-combate-item {
+    background-color: var(--bg-secondary);
+    padding: 15px;
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+.status-combate-valor {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+
+    .raca-list,
+    .classe-list,
+    .origem-list {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    }
+
+    .status-combate {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .raca-list,
+    .classe-list,
+    .origem-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+.top-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+}
+
+.left-buttons,
+.right-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.btn i {
+    font-size: 18px;
+}
+
+.btn span {
+    line-height: 1;
+}
+
+.btn-primary {
+    background-color: #2196f3;
+    color: #fff;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+/* Ajuste do conteúdo principal */
+.page-content {
+    padding-top: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+@media (max-width: 768px) {
+    .btn span {
+        display: none;
+    }
+
+    .btn {
+        padding: 8px;
+    }
+
+    .btn i {
+        margin: 0;
+    }
+}
+
+/* Botões da barra superior */
+#btnOBS {
+    background: linear-gradient(135deg, #333333 0%, #444444 100%) !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+}
+
+#btnOBS:hover {
+    background: linear-gradient(135deg, #444444 0%, #555555 100%) !important;
+}
+
+#btnOBS:active {
+    background: linear-gradient(135deg, #555555 0%, #666666 100%) !important;
+}
+
+#btnSalvarFicha {
+    background: linear-gradient(135deg, #000000 0%, #333333 100%) !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+}
+
+#btnSalvarFicha:hover {
+    background: linear-gradient(135deg, #333333 0%, #444444 100%) !important;
+}
+
+#btnSalvarFicha:active {
+    background: linear-gradient(135deg, #444444 0%, #555555 100%) !important;
+}
+
+/* Botões da barra superior - Novos estilos */
+.top-bar .btn.btn-secondary,
+.top-bar a.btn.btn-secondary {
+    background: linear-gradient(135deg, #FFC100 0%, #FFD033 100%) !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+}
+
+.top-bar .btn.btn-secondary:hover,
+.top-bar a.btn.btn-secondary:hover {
+    background: linear-gradient(135deg, #FFD033 0%, #FFE066 100%) !important;
+}
+
+.top-bar .btn.btn-secondary:active,
+.top-bar a.btn.btn-secondary:active {
+    background: linear-gradient(135deg, #E6AE00 0%, #FFC100 100%) !important;
+}
+
+.top-bar #btnOBS,
+.top-bar button#btnOBS {
+    background: linear-gradient(135deg, #FF8A08 0%, #FF9F33 100%) !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+}
+
+.top-bar #btnOBS:hover,
+.top-bar button#btnOBS:hover {
+    background: linear-gradient(135deg, #FF9F33 0%, #FFB459 100%) !important;
+}
+
+.top-bar #btnOBS:active,
+.top-bar button#btnOBS:active {
+    background: linear-gradient(135deg, #E67B00 0%, #FF8A08 100%) !important;
+}
+
+.top-bar #btnSalvarFicha,
+.top-bar button#btnSalvarFicha {
+    background: linear-gradient(135deg, #FF6500 0%, #FF8533 100%) !important;
+    color: #ffffff !important;
+    transition: all 0.3s ease !important;
+}
+
+.top-bar #btnSalvarFicha:hover,
+.top-bar button#btnSalvarFicha:hover {
+    background: linear-gradient(135deg, #FF8533 0%, #FFA366 100%) !important;
+}
+
+.top-bar #btnSalvarFicha:active,
+.top-bar button#btnSalvarFicha:active {
+    background: linear-gradient(135deg, #E65C00 0%, #FF6500 100%) !important;
 }
