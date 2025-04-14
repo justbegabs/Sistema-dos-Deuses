@@ -88,8 +88,10 @@ body {
     padding-top: 60px;
     max-width: 1200px;
     margin: 0 auto;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Cards e Seções */
@@ -97,13 +99,24 @@ body {
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
-    margin-bottom: 2rem;
+    margin: 0 auto 2rem auto;
     overflow: hidden;
     border: 1px solid var(--border-color);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .section-content {
     padding: 1.5rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .section-title {
@@ -114,20 +127,114 @@ body {
 }
 
 /* Status e Barras de Progresso */
+.barra-progresso {
+    width: 100%;
+    height: 8px;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.barra-vida,
+.barra-sanidade,
+.barra-mana,
+.barra-alma {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(90deg, var(--cor-primaria), var(--cor-secundaria));
+    transition: width 0.3s ease-in-out;
+}
+
 .barra-vida {
-    background-color: #E74C3C;
+    --cor-primaria: #ff4444;
+    --cor-secundaria: #ff6666;
 }
 
 .barra-sanidade {
-    background-color: #9B59B6;
+    --cor-primaria: #9933cc;
+    --cor-secundaria: #b366ff;
 }
 
 .barra-mana {
-    background-color: #3498DB;
+    --cor-primaria: #0099cc;
+    --cor-secundaria: #33b5e5;
 }
 
 .barra-alma {
-    background-color: #F1C40F;
+    --cor-primaria: #ffbb33;
+    --cor-secundaria: #ffcc66;
+}
+
+.status-grupo {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 1rem;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+    margin-bottom: 1rem;
+}
+
+.status-valores {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.status-valores input {
+    width: 60px;
+    text-align: center;
+    padding: 0.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+.status-separator {
+    color: white;
+    font-weight: bold;
+}
+
+/* Status Grid */
+.status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    margin: 0 auto;
+}
+
+.status-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.status-label i {
+    font-size: 1.3rem;
+}
+
+.status-label[data-status="vida"] i {
+    color: #ff4444;
+}
+
+.status-label[data-status="sanidade"] i {
+    color: #9933cc;
+}
+
+.status-label[data-status="mana"] i {
+    color: #0099cc;
+}
+
+.status-label[data-status="alma"] i {
+    color: #ffbb33;
 }
 
 /* Formulários */
@@ -187,12 +294,16 @@ body {
     color: white;
 }
 
-/* Grid e containers */
+/* Grid Container */
 .grid-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1rem;
-    margin: 1rem 0;
+    margin: 1rem auto;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
 }
 
 .grid-box {
@@ -201,6 +312,8 @@ body {
     border-radius: 8px;
     padding: 1rem;
     transition: all 0.3s ease;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .grid-box:hover {
@@ -208,63 +321,16 @@ body {
     transform: translateY(-2px);
 }
 
-/* Formulários e inputs */
-.form-group {
-    margin-bottom: 1rem;
-}
-
-.form-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: var(--cor-texto);
-    font-size: 0.9rem;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--cor-texto);
-    background: rgba(255, 255, 255, 0.15);
-}
-
-/* Barras de progresso */
-.barra-progresso {
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    margin: 0.5rem 0;
-}
-
-.barra-vida {
-    background-color: #E74C3C;
-}
-
-.barra-sanidade {
-    background-color: #9B59B6;
-}
-
-.barra-mana {
-    background-color: #3498DB;
-}
-
-.barra-alma {
-    background-color: #F1C40F;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .navbar-inner {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .btn {
-        width: 100%;
-    }
-
-    .grid-container {
-        grid-template-columns: 1fr;
-    }
+/* Info Row */
+.info-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+    margin: 0 auto;
 }
 
 /* Grid de informações */
@@ -455,8 +521,7 @@ body {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 4px;
     overflow: hidden;
-    position: relative;
-    width: 100%;
+    margin: 0.5rem 0;
 }
 
 .vida-barra,
@@ -639,8 +704,11 @@ body {
 }
 
 .pericia-item {
-    margin-bottom: 16px;
-    color: #ffffff;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
 }
 
 .pericia-principal {
@@ -668,13 +736,14 @@ body {
 
 .sub-pericias {
     display: none;
-    flex-direction: column;
-    gap: 5px;
-    margin-left: 20px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    opacity: 0;
-    max-height: 0;
+    padding: 5px 0;
+    margin-left: 0;
+    background-color: transparent;
+    border-radius: 0 0 5px 5px;
+    border: 1px solid #ff8533;
+    border-top: none;
+    width: 100%;
+    max-width: 100%;
 }
 
 .sub-pericias.visible {
@@ -950,7 +1019,7 @@ body {
     border: 1px solid #ff8533;
     transition: background-color 0.2s;
     width: calc(100% - 20px);
-    min-width: 480px;
+    max-width: 100%;
 }
 
 .sub-pericia-item:hover {
@@ -1215,14 +1284,20 @@ body {
 
 .pericias-lista {
     padding: 10px;
-    min-width: 500px;
-    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .pericia-item {
     margin-bottom: 5px;
     border-radius: 5px;
     overflow: hidden;
+    width: 100%;
+    max-width: 100%;
 }
 
 .pericia-principal::before {
@@ -1961,8 +2036,10 @@ body {
     padding-top: 60px;
     max-width: 1200px;
     margin: 0 auto;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 @media (max-width: 768px) {

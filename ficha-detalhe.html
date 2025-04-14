@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="css/ficha.css">
     <link rel="stylesheet" href="css/pericias.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/framework7-icons/css/framework7-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
@@ -92,12 +93,19 @@
             <div class="section card">
                 <div class="section-content">
                     <h2 class="section-title">Status Vitais</h2>
+                    <!-- Status Grid -->
                     <div class="status-grid">
                         <div class="status-grupo">
-                            <label class="status-label">Vida</label>
+                            <div class="status-label" data-status="vida">
+                                <i class="fas fa-heart"></i>
+                                <span>Vida</span>
+                            </div>
                             <div class="status-valores">
                                 <input type="number" class="form-control status-input" id="vida" placeholder="0"
                                     min="0">
+                                <span class="status-separator">/</span>
+                                <input type="number" class="form-control status-input" id="vidaMaxima" placeholder="0"
+                                    min="0" readonly>
                             </div>
                             <div class="barra-progresso">
                                 <div class="barra-vida"></div>
@@ -105,10 +113,16 @@
                         </div>
 
                         <div class="status-grupo">
-                            <label class="status-label">Sanidade</label>
+                            <div class="status-label" data-status="sanidade">
+                                <i class="fas fa-brain"></i>
+                                <span>Sanidade</span>
+                            </div>
                             <div class="status-valores">
                                 <input type="number" class="form-control status-input" id="sanidade" placeholder="0"
                                     min="0">
+                                <span class="status-separator">/</span>
+                                <input type="number" class="form-control status-input" id="sanidadeMaxima"
+                                    placeholder="0" min="0" readonly>
                             </div>
                             <div class="barra-progresso">
                                 <div class="barra-sanidade"></div>
@@ -116,10 +130,16 @@
                         </div>
 
                         <div class="status-grupo">
-                            <label class="status-label">Mana</label>
+                            <div class="status-label" data-status="mana">
+                                <i class="fas fa-bolt"></i>
+                                <span>Mana</span>
+                            </div>
                             <div class="status-valores">
                                 <input type="number" class="form-control status-input" id="mana" placeholder="0"
                                     min="0">
+                                <span class="status-separator">/</span>
+                                <input type="number" class="form-control status-input" id="manaMaxima" placeholder="0"
+                                    min="0" readonly>
                             </div>
                             <div class="barra-progresso">
                                 <div class="barra-mana"></div>
@@ -127,10 +147,16 @@
                         </div>
 
                         <div class="status-grupo">
-                            <label class="status-label">Alma</label>
+                            <div class="status-label" data-status="alma">
+                                <i class="fas fa-star"></i>
+                                <span>Alma</span>
+                            </div>
                             <div class="status-valores">
                                 <input type="number" class="form-control status-input" id="alma" placeholder="0"
                                     min="0">
+                                <span class="status-separator">/</span>
+                                <input type="number" class="form-control status-input" id="almaMaxima" placeholder="0"
+                                    min="0" readonly>
                             </div>
                             <div class="barra-progresso">
                                 <div class="barra-alma"></div>
@@ -1471,6 +1497,7 @@ Origem">+0</span>
     <script src="js/ficha.js"></script>
     <script src="js/pericias.js"></script>
     <script src="js/dice.js"></script>
+    <script src="js/save-navigation.js"></script>
 </body>
 
 </html>

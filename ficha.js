@@ -113,37 +113,173 @@ function validarCampoNumerico(valor, min = 0, max = 999) {
   return Math.max(min, Math.min(max, num));
 }
 
-// Funções de salvamento e carregamento
-// Adiciona event listeners quando o DOM estiver carregado
+// Função principal de inicialização
+function inicializarFicha() {
+  console.log('Iniciando configuração da ficha...');
+
+  // Primeiro, verifica se todos os elementos necessários existem
+  const elementosNecessarios = [
+    'vida', 'vidaMaxima',
+    'sanidade', 'sanidadeMaxima',
+    'mana', 'manaMaxima',
+    'alma', 'almaMaxima',
+    'resiliencia', 'intelecto',
+    'carisma', 'magia', 'nivel'
+  ];
+
+  const elementosEncontrados = elementosNecessarios.every(id => {
+    const elemento = document.getElementById(id);
+    if (!elemento) {
+      console.log(`Elemento ${id} não encontrado`);
+      return false;
+    }
+    return true;
+  });
+
+  if (!elementosEncontrados) {
+    console.error('Nem todos os elementos necessários foram encontrados');
+    return;
+  }
+
+  console.log('Todos os elementos necessários foram encontrados');
+
+  // Configurar event listeners para os campos de status
+  ['vida', 'sanidade', 'mana', 'alma'].forEach(status => {
+    const input = document.getElementById(status);
+    const maxInput = document.getElementById(status + 'Maxima');
+
+    if (input) {
+      input.addEventListener('change', () => {
+        console.log(`Atualizando barra de ${status}`);
+        atualizarTodasBarras();
+      });
+      input.addEventListener('input', () => {
+        console.log(`Atualizando barra de ${status}`);
+        atualizarTodasBarras();
+      });
+    }
+  });
+
+  // Configurar event listeners para os atributos
+  ['resiliencia', 'intelecto', 'carisma', 'magia', 'nivel'].forEach(atributo => {
+    const input = document.getElementById(atributo);
+    if (input) {
+      input.addEventListener('change', () => {
+        console.log(`Atualizando valores por mudança em ${atributo}`);
+        atualizarValoresPorAtributos();
+      });
+      input.addEventListener('input', () => {
+        console.log(`Atualizando valores por input em ${atributo}`);
+        atualizarValoresPorAtributos();
+      });
+    }
+  });
+
+  // Carregar dados iniciais
+  const fichaId = obterIdDaUrl();
+  if (fichaId) {
+    carregarFicha();
+  } else {
+    // Inicializa com valores padrão e força atualização
+    inicializarValoresPadrao();
+    setTimeout(() => {
+      console.log('Forçando atualização inicial dos valores...');
+      atualizarValoresPorAtributos();
+    }, 0);
+  }
+
+  // Forçar atualização das barras após um pequeno delay
+  setTimeout(() => {
+    console.log('Forçando atualização inicial das barras...');
+    atualizarTodasBarras();
+  }, 100);
+}
+
+// Função para atualizar todas as barras
+function atualizarTodasBarras() {
+  console.log('Atualizando todas as barras...');
+
+  const barras = {
+    vida: { atual: 'vida', max: 'vidaMaxima', classe: 'barra-vida' },
+    sanidade: { atual: 'sanidade', max: 'sanidadeMaxima', classe: 'barra-sanidade' },
+    mana: { atual: 'mana', max: 'manaMaxima', classe: 'barra-mana' },
+    alma: { atual: 'alma', max: 'almaMaxima', classe: 'barra-alma' }
+  };
+
+  Object.entries(barras).forEach(([nome, config]) => {
+    const atualElement = document.getElementById(config.atual);
+    const maxElement = document.getElementById(config.max);
+    const barra = document.querySelector(`.${config.classe}`);
+
+    if (atualElement && maxElement && barra) {
+      const atual = parseInt(atualElement.value) || 0;
+      const max = parseInt(maxElement.value) || 1; // Evita divisão por zero
+
+      // Garante que o valor atual não exceda o máximo
+      if (atual > max) {
+        atualElement.value = max;
+      }
+
+      // Calcula a proporção (entre 0 e 1)
+      const proporcao = Math.max(0, Math.min(1, atual / max));
+
+      console.log(`${nome}: ${atual}/${max} = ${proporcao * 100}%`);
+
+      // Atualiza a barra usando transform scale
+      barra.style.width = `${proporcao * 100}%`;
+    } else {
+      console.warn(`Elementos não encontrados para ${nome}`);
+    }
+  });
+}
+
+// Adiciona event listeners para os campos máximos
 document.addEventListener('DOMContentLoaded', function () {
-  const btnSalvar = document.getElementById('btnSalvarFicha');
-  const btnOBS = document.getElementById('btnOBS');
+  const maxFields = ['vidaMaxima', 'sanidadeMaxima', 'manaMaxima', 'almaMaxima'];
+  maxFields.forEach(field => {
+    const element = document.getElementById(field);
+    if (element) {
+      element.addEventListener('change', atualizarTodasBarras);
+      element.addEventListener('input', atualizarTodasBarras);
+    }
+  });
+});
 
-  if (btnSalvar) {
-    btnSalvar.addEventListener('click', salvarFicha);
-  }
+// Modificar o DOMContentLoaded para usar a nova função de inicialização
+document.addEventListener('DOMContentLoaded', function () {
+  console.log('DOM carregado, iniciando configuração...');
 
-  if (btnOBS) {
-    btnOBS.addEventListener('click', window.abrirOBS);
-  }
+  // Usar requestAnimationFrame para garantir que o DOM está pronto
+  window.requestAnimationFrame(() => {
+    inicializarFicha();
+  });
 });
 
 async function salvarFicha() {
+  console.log('Função salvarFicha iniciada');
+
+  // Mostrar loading inicial
+  Swal.fire({
+    title: 'Salvando...',
+    text: 'Enviando dados para o servidor',
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false,
+    showConfirmButton: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+
   try {
-    // Verificar se o serviço de API está disponível
-    if (!window.ApiService) {
-      console.error('Serviço de API não encontrado');
-      Swal.fire({
-        icon: 'error',
-        title: 'Erro',
-        text: 'Serviço de API não disponível. Recarregue a página e tente novamente.'
-      });
-      return;
+    // Verificar se o apiService está disponível
+    if (!apiService) {
+      throw new Error('Serviço de API não disponível');
     }
 
+    // Obter ID da ficha atual ou gerar um novo
     let fichaId = obterIdDaUrl();
     if (!fichaId) {
-      // Se não houver ID na URL, gerar um novo ID
       fichaId = await gerarNovoId();
     }
 
@@ -153,120 +289,205 @@ async function salvarFicha() {
       return element ? element.value || defaultValue : defaultValue;
     };
 
-    const getElementMax = (id, defaultValue = '') => {
-      const element = document.getElementById(id);
-      return element ? element.max || defaultValue : defaultValue;
-    };
-
-    // Coleta todos os dados da ficha com validação
+    // Coletando todos os dados da ficha
     const dadosFicha = {
       id: fichaId,
       nome: getElementValue('nome', ''),
+      // Informações básicas
+      idade: getElementValue('idade', ''),
+      data_nascimento: getElementValue('data_nascimento', ''),
+      altura: getElementValue('altura', ''),
+      tipo_sanguineo: getElementValue('tipo_sanguineo', ''),
+      sexualidade: getElementValue('sexualidade', ''),
+      // Status principais
       nivel: validarCampoNumerico(getElementValue('nivel', '0')),
       vida: validarCampoNumerico(getElementValue('vida', '0')),
-      vidaMaxima: validarCampoNumerico(getElementMax('vida', '20')),
+      vidaMaxima: validarCampoNumerico(getElementValue('vidaMaxima', '20')),
       sanidade: validarCampoNumerico(getElementValue('sanidade', '0')),
-      sanidadeMaxima: validarCampoNumerico(getElementMax('sanidade', '10')),
+      sanidadeMaxima: validarCampoNumerico(getElementValue('sanidadeMaxima', '10')),
       mana: validarCampoNumerico(getElementValue('mana', '0')),
-      manaMaxima: validarCampoNumerico(getElementMax('mana', '15')),
+      manaMaxima: validarCampoNumerico(getElementValue('manaMaxima', '15')),
       alma: validarCampoNumerico(getElementValue('alma', '0')),
-      almaMaxima: validarCampoNumerico(getElementMax('alma', '15')),
+      almaMaxima: validarCampoNumerico(getElementValue('almaMaxima', '15')),
+      // Status de combate
       defesa: validarCampoNumerico(getElementValue('defesa', '0')),
       esquiva: validarCampoNumerico(getElementValue('esquiva', '0')),
-      bloqueio: validarCampoNumerico(getElementValue('bloqueio', '0'))
+      bloqueio: validarCampoNumerico(getElementValue('bloqueio', '0')),
+      iniciativa: validarCampoNumerico(getElementValue('iniciativa', '0')),
+      deslocamento: validarCampoNumerico(getElementValue('deslocamento', '0')),
+      // Informações do personagem
+      raca: getElementValue('raca', ''),
+      origem: getElementValue('origem', ''),
+      classe: getElementValue('classe', ''),
+      // Atributos
+      forca: validarCampoNumerico(getElementValue('forca', '0')),
+      destreza: validarCampoNumerico(getElementValue('destreza', '0')),
+      constituicao: validarCampoNumerico(getElementValue('constituicao', '0')),
+      intelecto: validarCampoNumerico(getElementValue('intelecto', '0')),
+      sabedoria: validarCampoNumerico(getElementValue('sabedoria', '0')),
+      carisma: validarCampoNumerico(getElementValue('carisma', '0')),
+      resiliencia: validarCampoNumerico(getElementValue('resiliencia', '0')),
+      magia: validarCampoNumerico(getElementValue('magia', '0')),
+      pericias: {}
     };
 
-    // Validação básica dos dados
-    if (!dadosFicha.nome) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Atenção',
-        text: 'Por favor, preencha o nome do personagem'
-      });
-      return;
-    }
+    // Coletando dados das perícias
+    document.querySelectorAll('input[data-pericia]').forEach(input => {
+      dadosFicha.pericias[input.dataset.pericia] = input.value;
+    });
 
-    try {
-      // Verificar conexão com a API antes de tentar salvar
+    console.log('Dados coletados, tentando salvar...');
+
+    // Tentativa de salvar com retry
+    let tentativas = 0;
+    const maxTentativas = 3;
+    let salvou = false;
+
+    while (tentativas < maxTentativas && !salvou) {
       try {
-        await fetch(`${API_URL}/personagens`, { method: 'HEAD' });
-      } catch (connectionError) {
-        console.error('Erro de conexão com a API:', connectionError);
-        Swal.fire({
-          icon: 'error',
-          title: 'Erro de Conexão',
-          text: 'Não foi possível conectar ao servidor. Verifique se o servidor está rodando e tente novamente.'
+        // Salvando na API
+        if (fichaId) {
+          await apiService.atualizarPersonagem(fichaId, dadosFicha);
+        } else {
+          await apiService.criarPersonagem(dadosFicha);
+        }
+        salvou = true;
+      } catch (error) {
+        tentativas++;
+        console.error(`Tentativa ${tentativas}/${maxTentativas} falhou:`, error);
+
+        if (tentativas >= maxTentativas) {
+          throw error;
+        }
+
+        // Atualiza mensagem do loading
+        Swal.update({
+          text: `Tentativa ${tentativas}/${maxTentativas} falhou. Tentando novamente...`
         });
-        return;
+
+        // Aguarda 2 segundos antes da próxima tentativa
+        await new Promise(resolve => setTimeout(resolve, 2000));
       }
-
-      if (fichaId) {
-        // Atualiza ficha existente
-        await apiService.atualizarPersonagem(fichaId, dadosFicha);
-      } else {
-        // Cria nova ficha
-        await apiService.criarPersonagem(dadosFicha);
-      }
-
-      Swal.fire({
-        icon: 'success',
-        title: 'Sucesso',
-        text: 'Ficha salva com sucesso!',
-        timer: 1500,
-        showConfirmButton: false
-      });
-
-    } catch (error) {
-      console.error('Erro ao acessar API:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Erro',
-        text: `Erro ao salvar na API: ${error.message || 'Verifique sua conexão com o servidor'}`
-      });
     }
+
+    console.log('Ficha salva com sucesso!');
+
+    Swal.fire({
+      title: 'Sucesso!',
+      text: 'Ficha salva com sucesso!',
+      icon: 'success',
+      timer: 2000,
+      showConfirmButton: false
+    });
 
   } catch (error) {
     console.error('Erro ao salvar ficha:', error);
+
+    let mensagemErro = 'Não foi possível salvar a ficha. ';
+
+    if (error.message.includes('Failed to fetch') || error.message.includes('conectar ao servidor')) {
+      mensagemErro += 'Verifique sua conexão com a internet e se o servidor está online.';
+    } else if (error.name === 'AbortError') {
+      mensagemErro += 'O servidor está demorando muito para responder. Por favor, tente novamente em alguns minutos.';
+    } else {
+      mensagemErro += error.message || 'Erro desconhecido.';
+    }
+
     Swal.fire({
+      title: 'Erro ao Salvar',
+      text: mensagemErro,
       icon: 'error',
-      title: 'Erro',
-      text: 'Ocorreu um erro ao salvar a ficha. Por favor, verifique os dados e tente novamente.'
+      confirmButtonText: 'OK'
     });
   }
 }
 
+function calcularVida() {
+  const resiliencia = parseInt(document.getElementById('resiliencia')?.value) || 0;
+  const nivel = parseInt(document.getElementById('nivel')?.value) || 0;
+  return (resiliencia * 3) + 20 + (nivel * 5);
+}
+
+function calcularSanidade() {
+  const intelecto = parseInt(document.getElementById('intelecto')?.value) || 0;
+  const carisma = parseInt(document.getElementById('carisma')?.value) || 0;
+  return (intelecto * 5) + (carisma * 3) + 10;
+}
+
+function calcularMana() {
+  return 15; // Valor fixo
+}
+
+function calcularAlma() {
+  const magia = parseInt(document.getElementById('magia')?.value) || 0;
+  const resiliencia = parseInt(document.getElementById('resiliencia')?.value) || 0;
+  const intelecto = parseInt(document.getElementById('intelecto')?.value) || 0;
+  return (magia * 5) + (resiliencia * 3) + (intelecto * 2) + 15;
+}
+
 function inicializarValoresPadrao() {
-  // Define nível
-  document.querySelector(`#${CONSTANTES.IDS.NIVEL}`).value = VALORES_PADRAO.NIVEL;
+  console.log('Inicializando valores padrão...');
 
-  // Define valores de vida
-  document.querySelector(`#${CONSTANTES.IDS.VIDA}`).value = VALORES_PADRAO.VIDA.ATUAL;
-  document.querySelector(`#${CONSTANTES.IDS.VIDA_MAX}`).value = VALORES_PADRAO.VIDA.MAX;
+  // Primeiro inicializa os atributos base
+  const atributos = {
+    nivel: 0,
+    resiliencia: 0,
+    intelecto: 0,
+    carisma: 0,
+    magia: 0
+  };
 
-  // Define valores de sanidade
-  document.querySelector(`#${CONSTANTES.IDS.SANIDADE}`).value = VALORES_PADRAO.SANIDADE.ATUAL;
-  document.querySelector(`#${CONSTANTES.IDS.SANIDADE_MAX}`).value = VALORES_PADRAO.SANIDADE.MAX;
+  // Atualiza os atributos
+  Object.entries(atributos).forEach(([campo, valor]) => {
+    const elemento = document.getElementById(campo);
+    if (elemento) {
+      elemento.value = valor;
+      console.log(`Inicializando atributo ${campo} com valor ${valor}`);
+    }
+  });
 
-  // Define valores de mana
-  document.querySelector(`#${CONSTANTES.IDS.MANA}`).value = VALORES_PADRAO.MANA.ATUAL;
-  document.querySelector(`#${CONSTANTES.IDS.MANA_MAX}`).value = VALORES_PADRAO.MANA.MAX;
+  // Calcula os valores máximos
+  const vidaMax = calcularVida();
+  const sanidadeMax = calcularSanidade();
+  const manaMax = calcularMana();
+  const almaMax = calcularAlma();
 
-  // Define valores de alma
-  document.querySelector(`#${CONSTANTES.IDS.ALMA}`).value = VALORES_PADRAO.ALMA.ATUAL;
-  document.querySelector(`#${CONSTANTES.IDS.ALMA_MAX}`).value = VALORES_PADRAO.ALMA.MAX;
+  console.log('Valores máximos calculados:', {
+    vidaMax,
+    sanidadeMax,
+    manaMax,
+    almaMax
+  });
 
-  // Define valores de combate
-  document.querySelector(`#${CONSTANTES.IDS.DEFESA}`).value = VALORES_PADRAO.DEFESA;
-  document.querySelector(`#${CONSTANTES.IDS.ESQUIVA}`).value = VALORES_PADRAO.ESQUIVA;
-  document.querySelector(`#${CONSTANTES.IDS.BLOQUEIO}`).value = VALORES_PADRAO.BLOQUEIO;
+  // Define os valores iniciais
+  const valores = {
+    vida: vidaMax,
+    vidaMaxima: vidaMax,
+    sanidade: sanidadeMax,
+    sanidadeMaxima: sanidadeMax,
+    mana: manaMax,
+    manaMaxima: manaMax,
+    alma: almaMax,
+    almaMaxima: almaMax,
+    defesa: STATUS_BASE.DEFESA.BASE,
+    esquiva: STATUS_BASE.ESQUIVA.BASE,
+    bloqueio: STATUS_BASE.BLOQUEIO.BASE
+  };
 
-  // Atualiza todas as barras
-  atualizarBarraNivel();
-  atualizarBarraVida();
-  atualizarBarraSanidade();
-  atualizarBarraMana();
-  atualizarBarraAlma();
-  calcularDefesaTotal();
+  // Atualiza os campos com os valores calculados
+  Object.entries(valores).forEach(([campo, valor]) => {
+    const elemento = document.getElementById(campo);
+    if (elemento) {
+      elemento.value = valor;
+      console.log(`Inicializando status ${campo} com valor ${valor}`);
+    }
+  });
+
+  // Força atualização das barras
+  setTimeout(() => {
+    console.log('Atualizando barras após inicialização dos valores padrão...');
+    atualizarTodasBarras();
+  }, 100);
 }
 
 async function carregarFicha() {
@@ -277,164 +498,130 @@ async function carregarFicha() {
       return;
     }
 
-    // Usa a API para obter a ficha pelo ID
-    try {
-      const ficha = await apiService.getPersonagem(fichaId);
-      
-      if (!ficha) {
-        inicializarValoresPadrao();
-        return;
-      }
-
-      // Preenche os campos com os dados da ficha
-      document.getElementById('nome').value = ficha.nome || '';
-      document.getElementById('nivel').value = ficha.nivel || '0';
-
-      // Atualiza barras de status
-      const statusBars = ['vida', 'sanidade', 'mana', 'alma'];
-      statusBars.forEach(status => {
-        const input = document.getElementById(status);
-        const maxValue = ficha[status + 'Maxima'];
-        const value = ficha[status];
-
-        if (input) {
-          input.max = maxValue;
-          input.value = value;
-          atualizarBarraStatus(input);
-        }
-      });
-
-      // Atualiza valores de combate
-      document.getElementById('defesa').value = ficha.defesa || '10';
-      document.getElementById('esquiva').value = ficha.esquiva || '0';
-      document.getElementById('bloqueio').value = ficha.bloqueio || '0';
-
-      // Atualiza barra de nível
-      atualizarBarraStatus('nivel', ficha.nivel || '0', 100);
-    } catch (error) {
-      console.error('Erro ao buscar ficha da API:', error);
-      inicializarValoresPadrao();
+    const ficha = await apiService.getPersonagem(fichaId);
+    if (!ficha) {
+      throw new Error('Ficha não encontrada');
     }
+
+    // Preencher dados básicos
+    document.getElementById('nome').value = ficha.nome || '';
+    document.getElementById('nivel').value = ficha.nivel || '0';
+
+    // Preencher atributos primeiro
+    const atributos = ['forca', 'destreza', 'constituicao', 'intelecto', 'sabedoria', 'carisma', 'resiliencia', 'magia'];
+    atributos.forEach(atributo => {
+      const input = document.getElementById(atributo);
+      if (input) {
+        input.value = ficha[atributo] || '0';
+      }
+    });
+
+    // Calcular valores máximos
+    const vidaMaxima = calcularVidaMaxima();
+    const sanidadeMaxima = calcularSanidadeMaxima();
+    const manaMaxima = 15; // Valor fixo
+    const almaMaxima = calcularAlmaMaxima();
+
+    // Preencher status vitais com os valores calculados
+    document.getElementById('vidaMaxima').value = vidaMaxima;
+    document.getElementById('sanidadeMaxima').value = sanidadeMaxima;
+    document.getElementById('manaMaxima').value = manaMaxima;
+    document.getElementById('almaMaxima').value = almaMaxima;
+
+    // Preencher valores atuais (usando valores máximos se não houver valor salvo)
+    document.getElementById('vida').value = ficha.vida !== undefined ? Math.min(ficha.vida, vidaMaxima) : vidaMaxima;
+    document.getElementById('sanidade').value = ficha.sanidade !== undefined ? Math.min(ficha.sanidade, sanidadeMaxima) : sanidadeMaxima;
+    document.getElementById('mana').value = ficha.mana !== undefined ? Math.min(ficha.mana, manaMaxima) : manaMaxima;
+    document.getElementById('alma').value = ficha.alma !== undefined ? Math.min(ficha.alma, almaMaxima) : almaMaxima;
+
+    // Forçar atualização das barras
+    setTimeout(() => {
+      console.log('Atualizando barras após carregar ficha...');
+      atualizarTodasBarras();
+    }, 100);
 
   } catch (error) {
     console.error('Erro ao carregar ficha:', error);
     Swal.fire({
       icon: 'error',
-      title: 'Erro',
-      text: 'Ocorreu um erro ao carregar a ficha. Verifique sua conexão com o servidor.'
+      title: 'Erro ao Carregar Ficha',
+      text: 'Não foi possível carregar os dados. Verifique sua conexão.',
+      confirmButtonText: 'OK'
     });
     inicializarValoresPadrao();
   }
 }
 
-// Funções de atualização da interface
-function atualizarBarraVida() {
-  const nivel = parseInt(document.querySelector(`#${CONSTANTES.IDS.NIVEL}`).value) || 1;
-  const vidaMax = STATUS_BASE.VIDA.BASE + (STATUS_BASE.VIDA.POR_NIVEL * (nivel - 1));
-  const vidaAtual = parseInt(document.querySelector(`#${CONSTANTES.IDS.VIDA}`).value) || 0;
-
-  document.querySelector(`#${CONSTANTES.IDS.VIDA_MAX}`).value = vidaMax;
-  const porcentagem = Math.min(100, Math.max(0, (vidaAtual / vidaMax) * 100));
-
-  const barra = document.querySelector(`.${CONSTANTES.CLASSES.BARRA_VIDA}`);
-  if (barra) {
-    barra.style.width = `${porcentagem}%`;
-    atualizarCorBarra(barra, porcentagem);
-  }
+function calcularVidaMaxima() {
+  const resiliencia = parseInt(document.getElementById('resiliencia').value) || 0;
+  const nivel = parseInt(document.getElementById('nivel').value) || 0;
+  return (resiliencia * 3) + 20 + (nivel * 5);
 }
 
-function atualizarBarraSanidade() {
-  const nivel = parseInt(document.querySelector(`#${CONSTANTES.IDS.NIVEL}`).value) || 1;
-  const sanidadeMax = STATUS_BASE.SANIDADE.BASE + (STATUS_BASE.SANIDADE.POR_NIVEL * (nivel - 1));
-  const sanidadeAtual = parseInt(document.querySelector(`#${CONSTANTES.IDS.SANIDADE}`).value) || 0;
-
-  document.querySelector(`#${CONSTANTES.IDS.SANIDADE_MAX}`).value = sanidadeMax;
-  const porcentagem = Math.min(100, Math.max(0, (sanidadeAtual / sanidadeMax) * 100));
-
-  const barra = document.querySelector(`.${CONSTANTES.CLASSES.BARRA_SANIDADE}`);
-  if (barra) {
-    barra.style.width = `${porcentagem}%`;
-    atualizarCorBarra(barra, porcentagem);
-  }
+function calcularSanidadeMaxima() {
+  const intelecto = parseInt(document.getElementById('intelecto').value) || 0;
+  const carisma = parseInt(document.getElementById('carisma').value) || 0;
+  return (intelecto * 5) + (carisma * 3) + 10;
 }
 
-function atualizarBarraMana() {
-  const nivel = parseInt(document.querySelector(`#${CONSTANTES.IDS.NIVEL}`).value) || 1;
-  const manaMax = STATUS_BASE.MANA.BASE + (STATUS_BASE.MANA.POR_NIVEL * (nivel - 1));
-  const manaAtual = parseInt(document.querySelector(`#${CONSTANTES.IDS.MANA}`).value) || 0;
-
-  document.querySelector(`#${CONSTANTES.IDS.MANA_MAX}`).value = manaMax;
-  const porcentagem = Math.min(100, Math.max(0, (manaAtual / manaMax) * 100));
-
-  const barra = document.querySelector(`.${CONSTANTES.CLASSES.BARRA_MANA}`);
-  if (barra) {
-    barra.style.width = `${porcentagem}%`;
-    atualizarCorBarra(barra, porcentagem);
-  }
+function calcularAlmaMaxima() {
+  const magia = parseInt(document.getElementById('magia').value) || 0;
+  const resiliencia = parseInt(document.getElementById('resiliencia').value) || 0;
+  const intelecto = parseInt(document.getElementById('intelecto').value) || 0;
+  return (magia * 5) + (resiliencia * 3) + (intelecto * 2) + 15;
 }
 
-function atualizarBarraAlma() {
-  const nivel = parseInt(document.querySelector(`#${CONSTANTES.IDS.NIVEL}`).value) || 1;
-  const almaMax = STATUS_BASE.ALMA.BASE + (STATUS_BASE.ALMA.POR_NIVEL * (nivel - 1));
-  const almaAtual = parseInt(document.querySelector(`#${CONSTANTES.IDS.ALMA}`).value) || 0;
+function atualizarValoresPorAtributos() {
+  console.log('Atualizando valores por atributos...');
 
-  document.querySelector(`#${CONSTANTES.IDS.ALMA_MAX}`).value = almaMax;
-  const porcentagem = Math.min(100, Math.max(0, (almaAtual / almaMax) * 100));
+  // Calcula os novos valores máximos
+  const vidaMax = calcularVida();
+  const sanidadeMax = calcularSanidade();
+  const manaMax = calcularMana();
+  const almaMax = calcularAlma();
 
-  const barra = document.querySelector(`.${CONSTANTES.CLASSES.BARRA_ALMA}`);
-  if (barra) {
-    barra.style.width = `${porcentagem}%`;
-    atualizarCorBarra(barra, porcentagem);
+  console.log('Valores máximos calculados:', {
+    vidaMax,
+    sanidadeMax,
+    manaMax,
+    almaMax
+  });
+
+  // Obtém os elementos dos valores atuais
+  const vidaAtual = document.getElementById('vida');
+  const sanidadeAtual = document.getElementById('sanidade');
+  const manaAtual = document.getElementById('mana');
+  const almaAtual = document.getElementById('alma');
+
+  // Obtém os elementos dos valores máximos
+  const vidaMaxElement = document.getElementById('vidaMaxima');
+  const sanidadeMaxElement = document.getElementById('sanidadeMaxima');
+  const manaMaxElement = document.getElementById('manaMaxima');
+  const almaMaxElement = document.getElementById('almaMaxima');
+
+  // Atualiza os valores máximos
+  if (vidaMaxElement) vidaMaxElement.value = vidaMax;
+  if (sanidadeMaxElement) sanidadeMaxElement.value = sanidadeMax;
+  if (manaMaxElement) manaMaxElement.value = manaMax;
+  if (almaMaxElement) almaMaxElement.value = almaMax;
+
+  // Se os valores atuais forem 0 ou undefined, usa os valores máximos
+  if (vidaAtual && (parseInt(vidaAtual.value) === 0 || !vidaAtual.value)) {
+    vidaAtual.value = vidaMax;
   }
-}
-
-function atualizarCorBarra(barra, porcentagem) {
-  if (porcentagem <= 25) {
-    barra.style.backgroundColor = 'var(--danger-color, #ff4444)';
-  } else if (porcentagem <= 50) {
-    barra.style.backgroundColor = 'var(--warning-color, #ffbb33)';
-  } else {
-    barra.style.backgroundColor = 'var(--success-color, #00C851)';
+  if (sanidadeAtual && (parseInt(sanidadeAtual.value) === 0 || !sanidadeAtual.value)) {
+    sanidadeAtual.value = sanidadeMax;
   }
-}
-
-function atualizarBarraNivel() {
-  const nivel = parseInt(document.querySelector(`#${CONSTANTES.IDS.NIVEL}`).value) || 1;
-  const nivelMax = 100;
-  const porcentagem = Math.min(100, Math.max(0, (nivel / nivelMax) * 100));
-
-  const barra = document.querySelector(`.${CONSTANTES.CLASSES.BARRA_NIVEL_PROGRESSO}`);
-  if (barra) {
-    barra.style.width = `${porcentagem}%`;
+  if (manaAtual && (parseInt(manaAtual.value) === 0 || !manaAtual.value)) {
+    manaAtual.value = manaMax;
+  }
+  if (almaAtual && (parseInt(almaAtual.value) === 0 || !almaAtual.value)) {
+    almaAtual.value = almaMax;
   }
 
-  // Atualiza todos os status quando o nível muda
-  atualizarBarraVida();
-  atualizarBarraSanidade();
-  atualizarBarraMana();
-  atualizarBarraAlma();
-  calcularDefesaTotal();
-}
-
-function calcularDefesaTotal() {
-  const nivel = parseInt(document.querySelector(`#${CONSTANTES.IDS.NIVEL}`).value) || 1;
-
-  // Calcula os valores base com bônus por nível
-  const defesaBase = STATUS_BASE.DEFESA.BASE + Math.floor(nivel * STATUS_BASE.DEFESA.POR_NIVEL);
-  const esquivaBase = STATUS_BASE.ESQUIVA.BASE + Math.floor(nivel * STATUS_BASE.ESQUIVA.POR_NIVEL);
-  const bloqueioBase = STATUS_BASE.BLOQUEIO.BASE + Math.floor(nivel * STATUS_BASE.BLOQUEIO.POR_NIVEL);
-
-  // Atualiza os campos com os valores calculados
-  document.querySelector(`#${CONSTANTES.IDS.DEFESA}`).value = defesaBase;
-  document.querySelector(`#${CONSTANTES.IDS.ESQUIVA}`).value = esquivaBase;
-  document.querySelector(`#${CONSTANTES.IDS.BLOQUEIO}`).value = bloqueioBase;
-
-  // Calcula a defesa total
-  const defesaTotal = defesaBase + esquivaBase + bloqueioBase;
-  const defesaTotalElement = document.querySelector(`#${CONSTANTES.IDS.DEFESA_TOTAL}`);
-  if (defesaTotalElement) {
-    defesaTotalElement.textContent = defesaTotal;
-  }
+  // Atualiza as barras de progresso
+  console.log('Atualizando barras de progresso...');
+  atualizarTodasBarras();
 }
 
 // Funções de seleção de raça, classe e origem
@@ -525,77 +712,6 @@ function selecionarOrigem(origem) {
   Swal.close();
 }
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', function () {
-  inicializarPagina();
-
-  // Event listeners para botões
-  document.getElementById('btnSalvarFicha')?.addEventListener('click', () => {
-    salvarFicha();
-  });
-
-  document.getElementById('btnOBS')?.addEventListener('click', () => {
-    if (typeof abrirOBS === 'function') {
-      abrirOBS();
-    } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Erro',
-        text: 'Função OBS não encontrada. Por favor, recarregue a página.'
-      });
-    }
-  });
-
-  // Event listeners para status vitais
-  document.querySelectorAll('.status-input').forEach(input => {
-    input.addEventListener('input', (e) => {
-      const id = e.target.id;
-      switch (id) {
-        case CONSTANTES.IDS.VIDA:
-          atualizarBarraVida();
-          break;
-        case CONSTANTES.IDS.SANIDADE:
-          atualizarBarraSanidade();
-          break;
-        case CONSTANTES.IDS.MANA:
-          atualizarBarraMana();
-          break;
-        case CONSTANTES.IDS.ALMA:
-          atualizarBarraAlma();
-          break;
-      }
-    });
-  });
-
-  // Listener para nível
-  const nivelInput = document.querySelector(`#${CONSTANTES.IDS.NIVEL}`);
-  if (nivelInput) {
-    nivelInput.addEventListener('input', () => {
-      atualizarBarraNivel();
-      // Atualiza todos os status quando o nível muda
-      atualizarBarraVida();
-      atualizarBarraSanidade();
-      atualizarBarraMana();
-      atualizarBarraAlma();
-      calcularDefesaTotal();
-    });
-  }
-
-  // Listeners para defesa, esquiva e bloqueio
-  ['defesa', 'esquiva', 'bloqueio'].forEach(id => {
-    const input = document.querySelector(`#${id}`);
-    if (input) {
-      input.addEventListener('input', calcularDefesaTotal);
-    }
-  });
-});
-
-function inicializarPagina() {
-  inicializarValoresPadrao();
-  inicializarBarrasStatus();
-  carregarFicha();
-}
-
 // Funções de seleção
 function selecionarItem(elemento, lista, tipo) {
   const items = lista.querySelectorAll(`.${tipo}-item`);
@@ -625,118 +741,124 @@ function toggleSubPericias(pericia) {
   }
 }
 
-// Funções de persistência
+// Função para salvar dados (redirecionando para salvarFicha para evitar duplicação)
 async function salvarDados() {
-  try {
-    // Verificar se o serviço de API está disponível
-    if (!window.ApiService) {
-      console.error('Serviço de API não encontrado');
-      Swal.fire({
-        icon: 'error',
-        title: 'Erro',
-        text: 'Serviço de API não disponível. Recarregue a página e tente novamente.'
-      });
-      return;
-    }
+  // Redireciona para a função principal de salvar
+  await salvarFicha();
+}
 
-    // Obter ID da ficha atual ou gerar um novo
-    let fichaId = obterIdDaUrl();
-    if (!fichaId) {
-      fichaId = await gerarNovoId();
-    }
-
-    const dados = {
-      id: fichaId,
-      raca: document.querySelector(`.${CONSTANTES.IDS.RACA}-item.${CONSTANTES.CLASSES.ACTIVE}`)?.textContent,
-      classe: document.querySelector(`.${CONSTANTES.IDS.CLASSE}-item.${CONSTANTES.CLASSES.ACTIVE}`)?.textContent,
-      origem: document.querySelector(`.${CONSTANTES.IDS.ORIGEM}-item.${CONSTANTES.CLASSES.ACTIVE}`)?.textContent,
-      nivel: document.getElementById(CONSTANTES.IDS.NIVEL)?.value,
-      vida: document.getElementById(CONSTANTES.IDS.VIDA)?.value,
-      sanidade: document.getElementById(CONSTANTES.IDS.SANIDADE)?.value,
-      mana: document.getElementById(CONSTANTES.IDS.MANA)?.value,
-      alma: document.getElementById(CONSTANTES.IDS.ALMA)?.value
-    };
-
-    // Verificar conexão com a API antes de tentar salvar
-    try {
-      // Tenta fazer uma requisição simples para verificar se a API está acessível
-      const testConnection = await fetch('http://localhost:3000/api/personagens', { 
-        method: 'HEAD',
-        headers: {
-          'Cache-Control': 'no-cache'
-        }
-      });
-      
-      if (!testConnection.ok) {
-        throw new Error('Servidor indisponível');
-      }
-    } catch (connectionError) {
-      console.error('Erro de conexão com a API:', connectionError);
-      Swal.fire({
-        icon: 'error',
-        title: 'Erro de Conexão',
-        text: 'Não foi possível conectar ao servidor. Verifique se o servidor está rodando e tente novamente.'
-      });
-      return;
-    }
-
-    // Usar o serviço de API
-    if (fichaId) {
-      await apiService.atualizarPersonagem(fichaId, dados);
-    } else {
-      await apiService.criarPersonagem(dados);
-    }
-
-    // Notificar sucesso
-    Swal.fire({
-      icon: 'success',
-      title: 'Sucesso',
-      text: 'Dados salvos com sucesso!',
-      timer: 1500,
-      showConfirmButton: false
-    });
-  } catch (error) {
-    console.error('Erro ao salvar dados:', error);
-    Swal.fire({
-      icon: 'error',
-      title: 'Erro',
-      text: `Erro ao salvar os dados: ${error.message || 'Verifique sua conexão com o servidor'}`
-    });
+// Função para atualizar a barra de progresso
+function atualizarBarraProgresso(id, valor, valorMaximo) {
+  const barra = document.querySelector(`.barra-${id}`);
+  if (barra && valorMaximo > 0) {
+    const porcentagem = (valor / valorMaximo) * 100;
+    barra.style.setProperty('--porcentagem', `${porcentagem}%`);
   }
 }
 
-async function carregarDados() {
+// Função para atualizar todos os status
+function atualizarStatus() {
+  const nivel = parseInt(document.getElementById('nivel').value) || 0;
+  const resiliencia = parseInt(document.querySelector('[data-attribute="resiliencia"]').nextElementSibling.value) || 0;
+  const intelecto = parseInt(document.querySelector('[data-attribute="intelecto"]').nextElementSibling.value) || 0;
+  const carisma = parseInt(document.querySelector('[data-attribute="carisma"]').nextElementSibling.value) || 0;
+  const magia = parseInt(document.querySelector('[data-attribute="magia"]').nextElementSibling.value) || 0;
+
+  // Calcular valores máximos
+  const vidaMaxima = (resiliencia * 3) + 20 + (nivel * 5);
+  const sanidadeMaxima = (intelecto * 5) + (carisma * 3) + 10;
+  const manaMaxima = 15;
+  const almaMaxima = (magia * 5) + (resiliencia * 3) + (intelecto * 2) + 15;
+
+  // Atualizar campos máximos
+  document.getElementById('vidaMaxima').value = vidaMaxima;
+  document.getElementById('sanidadeMaxima').value = sanidadeMaxima;
+  document.getElementById('manaMaxima').value = manaMaxima;
+  document.getElementById('almaMaxima').value = almaMaxima;
+
+  // Limitar valores atuais aos máximos
+  const vida = document.getElementById('vida');
+  const sanidade = document.getElementById('sanidade');
+  const mana = document.getElementById('mana');
+  const alma = document.getElementById('alma');
+
+  vida.value = Math.min(parseInt(vida.value) || 0, vidaMaxima);
+  sanidade.value = Math.min(parseInt(sanidade.value) || 0, sanidadeMaxima);
+  mana.value = Math.min(parseInt(mana.value) || 0, manaMaxima);
+  alma.value = Math.min(parseInt(alma.value) || 0, almaMaxima);
+
+  // Atualizar barras de progresso
+  atualizarBarraProgresso('vida', vida.value, vidaMaxima);
+  atualizarBarraProgresso('sanidade', sanidade.value, sanidadeMaxima);
+  atualizarBarraProgresso('mana', mana.value, manaMaxima);
+  atualizarBarraProgresso('alma', alma.value, almaMaxima);
+}
+
+// Adicionar event listeners para os campos que afetam os status
+document.addEventListener('DOMContentLoaded', function () {
+  const camposStatus = ['nivel', 'vida', 'sanidade', 'mana', 'alma'];
+  const camposAtributos = ['resiliencia', 'intelecto', 'carisma', 'magia'];
+
+  // Adicionar listeners para campos de status
+  camposStatus.forEach(campo => {
+    const elemento = document.getElementById(campo);
+    if (elemento) {
+      elemento.addEventListener('input', atualizarStatus);
+    }
+  });
+
+  // Adicionar listeners para atributos que afetam os status
+  camposAtributos.forEach(atributo => {
+    const elemento = document.querySelector(`[data-attribute="${atributo}"]`).nextElementSibling;
+    if (elemento) {
+      elemento.addEventListener('input', atualizarStatus);
+    }
+  });
+
+  // Atualizar status inicialmente
+  atualizarStatus();
+});
+
+// Modificar a função carregarDados para incluir os valores máximos
+async function carregarDados(id) {
   try {
-    const fichaId = obterIdDaUrl();
-    if (!fichaId) return;
+    const personagem = await apiService.getPersonagem(id);
+    if (personagem) {
+      // ... código existente para carregar dados ...
 
-    // Usar o serviço de API para obter os dados
-    const dados = await apiService.getPersonagem(fichaId);
-    if (!dados) return;
-
-    Object.entries(dados).forEach(([key, value]) => {
-      if (key === 'raca' || key === 'classe' || key === 'origem') {
-        const items = document.querySelectorAll(`.${key}-item`);
-        items.forEach(item => {
-          if (item.textContent === value) {
-            item.classList.add(CONSTANTES.CLASSES.ACTIVE);
-          }
-        });
-      } else if (key !== 'id') { // Ignorar o campo id
-        const input = document.getElementById(key);
-        if (input && value) {
-          input.value = value;
-          atualizarBarraStatus(input);
-        }
-      }
-    });
+      // Atualizar status após carregar os dados
+      atualizarStatus();
+    }
   } catch (error) {
     console.error('Erro ao carregar dados:', error);
     Swal.fire({
       icon: 'error',
-      title: 'Erro',
-      text: 'Ocorreu um erro ao carregar os dados da ficha.'
+      title: 'Erro ao carregar dados',
+      text: error.message
     });
   }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Adiciona listeners para os atributos que afetam os cálculos
+  const atributos = ['resiliencia', 'intelecto', 'carisma', 'magia', 'nivel'];
+  atributos.forEach(atributo => {
+    const elemento = document.getElementById(atributo);
+    if (elemento) {
+      elemento.addEventListener('input', atualizarValoresPorAtributos);
+    }
+  });
+
+  // Adiciona event listener para o botão de salvar
+  const btnSalvar = document.getElementById('btnSalvarFicha');
+  if (btnSalvar) {
+    console.log('Configurando botão de salvar...');
+    btnSalvar.addEventListener('click', salvarFicha);
+  } else {
+    console.error('Botão de salvar não encontrado!');
+  }
+
+  // Calcula os valores iniciais
+  atualizarValoresPorAtributos();
+});
 
